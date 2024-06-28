@@ -26,13 +26,17 @@ class CultivoViewSet(viewsets.ModelViewSet):
     serializer_class = CultivoSerializer
 
     @action(detail=False, methods=['get'])
-    def by_area(self, request, pk=None):
-        area_id = request.query_params.get('area_id')
-        if area_id is not None:
-            cultivos = Cultivo.objects.filter(area_id=area_id).select_related('type', 'area').prefetch_related('disease')
-            serializer = self.get_serializer(cultivos, many=True)
-            return Response(serializer.data)
-        return Response([])
+    def by_area(self, request):
+        try:
+            area_id = request.query_params.get('area_id')
+            if area_id is not None:
+                cultivos = Cultivo.objects.filter(area_id=area_id).select_related('type', 'area').prefetch_related('disease')
+                serializer = self.get_serializer(cultivos, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({"detail": "area_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class VehiculosViewSet(viewsets.ModelViewSet):
     queryset = Vehiculos.objects.all().select_related('manager', 'area')
@@ -47,16 +51,19 @@ class CultivoEnfermedadViewSet(viewsets.ModelViewSet):
     serializer_class = CultivoEnfermedadSerializer
 
     @action(detail=False, methods=['get'])
-    def treatments_and_crops(self, request, pk=None):
-        area_id = request.query_params.get('area_id')
-        disease_id = request.query_params.get('disease_id')
-        if area_id and disease_id:
-            cultivos = Cultivo.objects.filter(area_id=area_id).select_related('type', 'area').prefetch_related('disease')
-            tratamientos = Tratamientos.objects.filter(disease_id=disease_id).select_related('disease')
-            cultivo_serializer = CultivoSerializer(cultivos, many=True)
-            tratamiento_serializer = TratamientosSerializer(tratamientos, many=True)
-            return Response({
-                'cultivos': cultivo_serializer.data,
-                'tratamientos': tratamiento_serializer.data
-            })
-        return Response([])
+    def treatments_and_crops(self, request):
+        try:
+            area_id = request.query_params.get('area_id')
+            disease_id = request.query_params.get('disease_id')
+            if area_id and disease_id:
+                cultivos = Cultivo.objects.filter(area_id=area_id).select_related('type', 'area').prefetch_related('disease')
+                tratamientos = Tratamientos.objects.filter(disease_id=disease_id).select_related('disease')
+                cultivo_serializer = CultivoSerializer(cultivos, many=True)
+                tratamiento_serializer = TratamientosSerializer(tratamientos, many=True)
+                return Response({
+                    'cultivos': cultivo_serializer.data,
+                    'tratamientos': tratamiento_serializer.data
+                }, status=status.HTTP_200_OK)
+            return Response({"detail": "area_id and disease_id are required"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
