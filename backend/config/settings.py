@@ -10,8 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,8 +31,8 @@ SECRET_KEY = 'django-insecure-(9i*32xjmc@chjvx!rlhv5xbiw@-es(p+wza*xa%0)dd0fpcf^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = 'localhost ::1 127.0.0.1'.split()
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000",]
 
 # Application definition
 
@@ -42,8 +47,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'django_filters',
-    'django_extensions',
-    
+    'django_extensions',    
     'granja',
     'usuario',
 ]
@@ -86,9 +90,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": 'django.db.backends.postgresql',
+        "NAME": os.environ.get("PGSQL_DATABASE"),
+        "USER": os.environ.get("PGSQL_USER"),
+        "PASSWORD": os.environ.get("PGSQL_PASSWORD"),
+        "HOST": os.environ.get("PGSQL_HOST"),
+        "PORT": os.environ.get("PGSQL_PORT"),
     }
 }
 
@@ -199,7 +207,3 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
-
-# Configuración de CORS
-CORS_ALLOW_ALL_ORIGINS = True  # Permite a todos los dominios acceder a tu API
-# O puedes listar dominios específicos con CORS_ALLOWED_ORIGINS
