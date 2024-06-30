@@ -12,7 +12,13 @@ class Area(models.Model):
 class TipoCultivo(models.Model):
     name = models.CharField(max_length=255)
     
-
+class Agricultores(models.Model):
+    name = models.CharField(max_length=255)
+    ci = models.CharField(max_length=255)
+    age = models.IntegerField()
+    
+    area = models.ForeignKey(Area, on_delete=models.CASCADE)
+    
 
 class Enfermedades(models.Model):
     STATUS_CHOICES = (
@@ -46,12 +52,13 @@ class Cultivo(models.Model):
     date_harved = models.DateTimeField(auto_now_add=False)
     status = models.CharField(max_length=12, choices=STATUS_CHOICES)
     
+    manager = models.ForeignKey(Agricultores, on_delete=models.CASCADE)
     type = models.ForeignKey(TipoCultivo, on_delete=models.CASCADE)
-    area = models.ForeignKey(Area, on_delete=models.CASCADE)
+    area = models.ManyToManyField(Area)
     
     disease = models.ManyToManyField(Enfermedades)
     
-class Vehiculos(models.Model):
+class Flota(models.Model):
     STATUS_CHOICES = (
         ('deteriorado', 'Deteriorado'),
         ('optimo', 'Optimo'),
@@ -59,7 +66,7 @@ class Vehiculos(models.Model):
     number = models.CharField(max_length=255)
     status = models.CharField(max_length=12, choices=STATUS_CHOICES)
     
-    manager = models.ForeignKey(User, on_delete=models.CASCADE)
+    manager = models.ForeignKey(Agricultores, on_delete=models.CASCADE)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     
     
@@ -68,12 +75,12 @@ class Animales(models.Model):
     race = models.CharField(max_length=255)
     species = models.CharField(max_length=255)
     
-    manager = models.ForeignKey(User, on_delete=models.CASCADE)
+    manager = models.ForeignKey(Agricultores, on_delete=models.CASCADE)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     
     
 class CultivoEnfermedad(models.Model):
-    manager = models.ForeignKey(User, on_delete=models.CASCADE)
+    manager = models.ForeignKey(Agricultores, on_delete=models.CASCADE)
     treatment = models.ForeignKey(Tratamientos, on_delete=models.CASCADE)
     disease = models.ForeignKey(Enfermedades, on_delete=models.CASCADE)
     crop = models.ForeignKey(Cultivo, on_delete=models.CASCADE)

@@ -1,13 +1,17 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Area, TipoCultivo, Enfermedades, Tratamientos, Cultivo, Vehiculos, Animales, CultivoEnfermedad
+from .models import Area, TipoCultivo, Enfermedades, Tratamientos, Cultivo, Flota, Animales, CultivoEnfermedad, Agricultores
 from .serializers import (AreaSerializer, TipoCultivoSerializer, EnfermedadesSerializer, TratamientosSerializer,
-                          CultivoSerializer, VehiculosSerializer, AnimalesSerializer, CultivoEnfermedadSerializer)
+                          CultivoSerializer, FlotaSerializer, AgricultoresSerializer, AnimalesSerializer, CultivoEnfermedadSerializer)
 
 class AreaViewSet(viewsets.ModelViewSet):
     queryset = Area.objects.all()
     serializer_class = AreaSerializer
+    
+class AgricultoresViewSet(viewsets.ModelViewSet):
+    queryset = Agricultores.objects.all()
+    serializer_class = AgricultoresSerializer
 
 class TipoCultivoViewSet(viewsets.ModelViewSet):
     queryset = TipoCultivo.objects.all()
@@ -38,9 +42,9 @@ class CultivoViewSet(viewsets.ModelViewSet):
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class VehiculosViewSet(viewsets.ModelViewSet):
-    queryset = Vehiculos.objects.all().select_related('manager', 'area')
-    serializer_class = VehiculosSerializer
+class FlotaViewSet(viewsets.ModelViewSet):
+    queryset = Flota.objects.all().select_related('manager', 'area')
+    serializer_class = FlotaSerializer
 
 class AnimalesViewSet(viewsets.ModelViewSet):
     queryset = Animales.objects.all().select_related('manager', 'area')

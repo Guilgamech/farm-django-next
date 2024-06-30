@@ -2,18 +2,19 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from granja.views import (AreaViewSet, TipoCultivoViewSet, EnfermedadesViewSet, TratamientosViewSet, CultivoViewSet, VehiculosViewSet, 
+from granja.views import (AreaViewSet, TipoCultivoViewSet, EnfermedadesViewSet, TratamientosViewSet, CultivoViewSet, AgricultoresViewSet, FlotaViewSet, 
                     AnimalesViewSet, CultivoEnfermedadViewSet)
 from usuario.views import UserView, LogoutView
 
 
 router = DefaultRouter()
 router.register(prefix='areas', viewset=AreaViewSet, basename="area")
+router.register(prefix='agricultores', viewset=AgricultoresViewSet, basename="agricultores")
 router.register(prefix='tipo_cultivos', viewset=TipoCultivoViewSet, basename="tipo_cultivo")
 router.register(prefix='enfermedades', viewset=EnfermedadesViewSet, basename="enfermedades")
 router.register(prefix='tratamientos', viewset=TratamientosViewSet, basename="tratamientos")
 router.register(prefix='cultivos', viewset=CultivoViewSet, basename="cultivos")
-router.register(prefix='vehiculos', viewset=VehiculosViewSet, basename="vehiculos")
+router.register(prefix='Flota', viewset=FlotaViewSet, basename="Flota")
 router.register(prefix='animales', viewset=AnimalesViewSet, basename="animales")
 router.register(prefix='cultivo_enfermedades', viewset=CultivoEnfermedadViewSet, basename="cultivo_enfermedades")
 router.register(prefix='user', viewset=UserView, basename='user')

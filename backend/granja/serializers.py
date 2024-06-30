@@ -1,10 +1,16 @@
 from rest_framework import serializers
-from .models import Area, TipoCultivo, Enfermedades, Tratamientos, Cultivo, Vehiculos, Animales, CultivoEnfermedad
+from .models import Area, TipoCultivo, Enfermedades, Tratamientos, Cultivo, Flota, Animales, CultivoEnfermedad, Agricultores
 
 class AreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Area
         fields = '__all__'
+        
+class AgricultoresSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Agricultores
+        fields = '__all__'
+
 
 class TipoCultivoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,12 +40,12 @@ class CultivoSerializer(serializers.ModelSerializer):
         model = Cultivo
         fields = '__all__'
 
-class VehiculosSerializer(serializers.ModelSerializer):
+class FlotaSerializer(serializers.ModelSerializer):
     manager = serializers.StringRelatedField(read_only=True)
     area = AreaSerializer(read_only=True)
 
     class Meta:
-        model = Vehiculos
+        model = Flota
         fields = '__all__'
 
 class AnimalesSerializer(serializers.ModelSerializer):
