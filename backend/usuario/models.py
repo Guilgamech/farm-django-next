@@ -36,7 +36,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(verbose_name='dirección de email', max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    rol = models.ForeignKey(Role, on_delete=models.CASCADE)
+    rol = models.ManyToManyField(Role)
 
     objects = UserManager()
 

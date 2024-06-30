@@ -2,8 +2,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from granja.views import (AreaViewSet, TipoCultivoViewSet, EnfermedadesViewSet, TratamientosViewSet, CultivoViewSet, AgricultoresViewSet, FlotaViewSet, 
-                    AnimalesViewSet, CultivoEnfermedadViewSet)
+from granja.views import *
 from usuario.views import UserView, LogoutView
 
 
@@ -16,7 +15,6 @@ router.register(prefix='tratamientos', viewset=TratamientosViewSet, basename="tr
 router.register(prefix='cultivos', viewset=CultivoViewSet, basename="cultivos")
 router.register(prefix='Flota', viewset=FlotaViewSet, basename="Flota")
 router.register(prefix='animales', viewset=AnimalesViewSet, basename="animales")
-router.register(prefix='cultivo_enfermedades', viewset=CultivoEnfermedadViewSet, basename="cultivo_enfermedades")
 router.register(prefix='user', viewset=UserView, basename='user')
 router.register(prefix='token/logout', viewset=LogoutView, basename='logout_view')
 

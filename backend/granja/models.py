@@ -54,11 +54,11 @@ class Cultivo(models.Model):
     status = models.CharField(max_length=12, choices=STATUS_CHOICES)
     
     type = models.ForeignKey(TipoCultivo, on_delete=models.CASCADE)
-    manager = models.ForeignKey(Agricultores, on_delete=models.CASCADE)
+    manager = models.ForeignKey(Agricultores, on_delete=models.CASCADE, related_name='manager_cultivos')
 
     areas = models.ManyToManyField(Area)
 
-    workers = models.ManyToManyField(Agricultores)
+    workers = models.ManyToManyField(Agricultores, related_name='worker_cultivos')
     disease = models.ManyToManyField(Enfermedades, through="CultivoEnfermedad")
 
 
