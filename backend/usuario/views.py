@@ -1,12 +1,8 @@
-from django.shortcuts import render
-
-# Create your views here.
-# views.py
-
 from rest_framework import viewsets, status, mixins
-
 from django.core.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from .models import User
 from .serializers import UserSerializer, LogoutSerializer
@@ -60,4 +56,10 @@ class UserView(viewsets.ModelViewSet):
             return super().list(request, *args, **kwargs)
         else:
             raise PermissionDenied()
+        
+    @action(detail=False, methods=["get"])
+    def me(self, request):
+        user: User = self.request.user
+        read = UserSerializer(user)
+        return Response({"user": read.data}, status=status.HTTP_200_OK)
         
