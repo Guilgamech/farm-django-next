@@ -19,6 +19,11 @@ class TipoCultivoViewSet(viewsets.ModelViewSet):
     queryset = TipoCultivo.objects.all()
     serializer_class = TipoCultivoSerializer
     permission_classes = [permissions.IsAuthenticated]
+    
+class TipoFlotaViewSet(viewsets.ModelViewSet):
+    queryset = TipoFlota.objects.all()
+    serializer_class = TipoFlotaSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 class EnfermedadesViewSet(NestedViewSetMixin):
     queryset = Enfermedades.objects.all()
