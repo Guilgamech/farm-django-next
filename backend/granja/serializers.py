@@ -1,11 +1,13 @@
 from rest_framework import serializers
-from .models import Area, TipoCultivo, Enfermedades, Tratamientos, Cultivo, Flota, Animales, CultivoEnfermedad, Agricultores
+from .models import *
+
 
 class AreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Area
         fields = '__all__'
-        
+
+
 class AgricultoresSerializer(serializers.ModelSerializer):
     class Meta:
         model = Agricultores
@@ -17,51 +19,120 @@ class TipoCultivoSerializer(serializers.ModelSerializer):
         model = TipoCultivo
         fields = '__all__'
 
+
+class TipoFlotaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TipoFlota
+        fields = '__all__'
+
+
 class EnfermedadesSerializer(serializers.ModelSerializer):
-    type_crops = TipoCultivoSerializer(read_only=True)
+    type_crops = serializers.PrimaryKeyRelatedField(queryset=TipoCultivo.objects.all())
 
     class Meta:
         model = Enfermedades
         fields = '__all__'
 
+
+class EnfermedadesReadSerializer(serializers.ModelSerializer):
+    type_crops = TipoCultivoSerializer()
+
+    class Meta:
+        model = Enfermedades
+        fields = '__all__'
+
+
 class TratamientosSerializer(serializers.ModelSerializer):
-    disease = EnfermedadesSerializer(read_only=True)
+    disease = serializers.PrimaryKeyRelatedField(queryset=Enfermedades.objects.all())
 
     class Meta:
         model = Tratamientos
         fields = '__all__'
 
+
+class TratamientosReadSerializer(serializers.ModelSerializer):
+    disease = EnfermedadesReadSerializer()
+
+    class Meta:
+        model = Tratamientos
+        fields = '__all__'
+
+
 class CultivoSerializer(serializers.ModelSerializer):
-    type = TipoCultivoSerializer(read_only=True)
-    area = AreaSerializer(read_only=True)
-    disease = EnfermedadesSerializer(many=True, read_only=True)
+    type = serializers.PrimaryKeyRelatedField(queryset=TipoCultivo.objects.all())
+    manager = serializers.PrimaryKeyRelatedField(queryset=Agricultores.objects.all())
 
     class Meta:
         model = Cultivo
-        fields = '__all__'
+        fields = ('code', 'name', 'date_planted', 'date_harved', 'status', 'type', 'manager')
+
 
 class FlotaSerializer(serializers.ModelSerializer):
-    manager = serializers.StringRelatedField(read_only=True)
-    area = AreaSerializer(read_only=True)
+    type = serializers.PrimaryKeyRelatedField(queryset=TipoFlota.objects.all())
+    manager = serializers.PrimaryKeyRelatedField(queryset=Agricultores.objects.all())
+    area = serializers.PrimaryKeyRelatedField(queryset=Area.objects.all())
 
     class Meta:
         model = Flota
         fields = '__all__'
 
+
+class FlotaReadSerializer(serializers.ModelSerializer):
+    type = TipoFlotaSerializer()
+    manager = AgricultoresSerializer()
+    area = AreaSerializer()
+
+    class Meta:
+        model = Flota
+        fields = '__all__'
+
+
 class AnimalesSerializer(serializers.ModelSerializer):
-    manager = serializers.StringRelatedField(read_only=True)
-    area = AreaSerializer(read_only=True)
+    manager = serializers.PrimaryKeyRelatedField(queryset=Agricultores.objects.all())
+    area = serializers.PrimaryKeyRelatedField(queryset=Area.objects.all())
 
     class Meta:
         model = Animales
         fields = '__all__'
 
+
+class AnimalesReadSerializer(serializers.ModelSerializer):
+    manager = AgricultoresSerializer()
+    area = AreaSerializer()
+
+    class Meta:
+        model = Animales
+        fields = '__all__'
+
+
 class CultivoEnfermedadSerializer(serializers.ModelSerializer):
-    manager = serializers.StringRelatedField(read_only=True)
-    treatment = TratamientosSerializer(read_only=True)
-    disease = EnfermedadesSerializer(read_only=True)
-    crop = CultivoSerializer(read_only=True)
+    manager = serializers.PrimaryKeyRelatedField(queryset=Agricultores.objects.all())
+    treatment = serializers.PrimaryKeyRelatedField(queryset=Tratamientos.objects.all())
+    disease = serializers.PrimaryKeyRelatedField(queryset=Enfermedades.objects.all())
+    crop = serializers.PrimaryKeyRelatedField(queryset=Cultivo.objects.all())
 
     class Meta:
         model = CultivoEnfermedad
+        fields = '__all__'
+
+
+class CultivoEnfermedadReadSerializer(serializers.ModelSerializer):
+    manager = AgricultoresSerializer()
+    treatment = TratamientosReadSerializer()
+    disease = EnfermedadesReadSerializer()
+
+    class Meta:
+        model = CultivoEnfermedad
+        fields = ('disease', 'manager', 'treatment', 'start', 'end', 'grade')
+
+
+class CultivoReadSerializer(serializers.ModelSerializer):
+    type = TipoCultivoSerializer()
+    manager = Agricultores()
+    area = AreaSerializer(many=True)
+    workers = AgricultoresSerializer(many=True)
+    disease = CultivoEnfermedadReadSerializer(many=True)
+
+    class Meta:
+        model = Cultivo
         fields = '__all__'

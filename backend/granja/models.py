@@ -9,9 +9,15 @@ class Area(models.Model):
     name = models.CharField(max_length=255)
     total_area = models.FloatField()
 
+
 class TipoCultivo(models.Model):
     name = models.CharField(max_length=255)
-    
+
+
+class TipoFlota(models.Model):
+    name = models.CharField(max_length=255)
+
+
 class Agricultores(models.Model):
     name = models.CharField(max_length=255)
     ci = models.CharField(max_length=255)
@@ -21,51 +27,50 @@ class Agricultores(models.Model):
     
 
 class Enfermedades(models.Model):
-    STATUS_CHOICES = (
-        ('leve', 'Leve'),
-        ('medio', 'Medio'),
-        ('grave', 'Grave'),
-    )
     name = models.CharField(max_length=255)
     category = models.CharField(max_length=255)
-    date_start = models.DateTimeField(auto_now_add=True)
-    grade = models.CharField(max_length=12, choices=STATUS_CHOICES)
     
     type_crops = models.ForeignKey(TipoCultivo, on_delete=models.CASCADE)
     
     
 class Tratamientos(models.Model):
+    name = models.CharField(max_length=255)
     treatment = models.TextField()
-    
+
     disease = models.ForeignKey(Enfermedades, on_delete=models.CASCADE)
     
 
 class Cultivo(models.Model):
     STATUS_CHOICES = (
+        ('semilleo', 'Semilleo'),
         ('sembrado', 'Sembrado'),
         ('cocecha', 'Cocecha'),
-        ('recogida', 'Recogida'),
     )
     code = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     date_planted = models.DateTimeField(auto_now_add=True)
-    date_harved = models.DateTimeField(auto_now_add=False)
+    date_harved = models.DateTimeField(null=True, default=None)
+
     status = models.CharField(max_length=12, choices=STATUS_CHOICES)
     
-    manager = models.ForeignKey(Agricultores, on_delete=models.CASCADE)
     type = models.ForeignKey(TipoCultivo, on_delete=models.CASCADE)
-    area = models.ManyToManyField(Area)
-    
-    disease = models.ManyToManyField(Enfermedades)
-    
+    manager = models.ForeignKey(Agricultores, on_delete=models.CASCADE)
+
+    areas = models.ManyToManyField(Area)
+
+    workers = models.ManyToManyField(Agricultores)
+    disease = models.ManyToManyField(Enfermedades, through="CultivoEnfermedad")
+
+
 class Flota(models.Model):
     STATUS_CHOICES = (
         ('deteriorado', 'Deteriorado'),
         ('optimo', 'Optimo'),
     )
-    number = models.CharField(max_length=255)
+    code = models.CharField(max_length=255)
     status = models.CharField(max_length=12, choices=STATUS_CHOICES)
-    
+
+    type = models.ForeignKey(TipoFlota, on_delete=models.CASCADE)
     manager = models.ForeignKey(Agricultores, on_delete=models.CASCADE)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     
@@ -80,12 +85,24 @@ class Animales(models.Model):
     
     
 class CultivoEnfermedad(models.Model):
-    manager = models.ForeignKey(Agricultores, on_delete=models.CASCADE)
-    treatment = models.ForeignKey(Tratamientos, on_delete=models.CASCADE)
+    STATUS_CHOICES = (
+        ('leve', 'Leve'),
+        ('medio', 'Medio'),
+        ('grave', 'Grave'),
+    )
     disease = models.ForeignKey(Enfermedades, on_delete=models.CASCADE)
     crop = models.ForeignKey(Cultivo, on_delete=models.CASCADE)
-    
-    
+
+    manager = models.ForeignKey(Agricultores, on_delete=models.CASCADE)
+    treatment = models.ForeignKey(Tratamientos, on_delete=models.CASCADE)
+
+    start = models.DateTimeField(auto_now_add=True)
+    end = models.DateTimeField(null=True, default=None)
+
+    grade = models.CharField(max_length=12, choices=STATUS_CHOICES)
+
+    class Meta:
+        unique_together = ('disease', 'crop', 'treatment', 'start')
 
     
     
