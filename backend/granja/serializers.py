@@ -136,3 +136,5 @@ class CultivoReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cultivo
         fields = '__all__'
+        
+        

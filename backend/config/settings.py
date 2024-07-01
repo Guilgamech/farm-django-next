@@ -31,8 +31,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS")
-CORS_ALLOWED_ORIGINS = [os.environ.get("CORS_ALLOWED_ORIGINS"),]
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "::1 localhost 127.0.0.1").split()
+CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "http://localhost:3000 http://localhost:5539 http://127.0.0.1:3000").split()
 
 # Application definition
 
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_filters',
     'django_extensions',
+    
     'granja',
     'usuario',
 ]

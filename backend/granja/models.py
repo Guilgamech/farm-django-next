@@ -10,6 +10,9 @@ class Area(models.Model):
     total_area = models.FloatField()
 
 
+
+
+
 class TipoCultivo(models.Model):
     name = models.CharField(max_length=255)
 
