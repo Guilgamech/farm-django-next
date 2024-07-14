@@ -23,13 +23,17 @@ class UserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     
     def create(self, request, *args, **kwargs):
+        user: User = self.request.user
         # Permitir la creación de usuarios sin autenticación
-        return super().create(request, *args, **kwargs)
+        if user.is_admin:
+            return super().create(request, *args, **kwargs)
+        else:
+            raise PermissionDenied()
     
     def update(self, request, *args, **kwargs):
         user: User = self.request.user
         # Verificar si el usuario autenticado es el propietario de la cuenta
-        if user == self.get_object():
+        if user.is_admin:
             return super().update(request, *args, **kwargs)
         else:
             raise PermissionDenied()
@@ -37,7 +41,7 @@ class UserView(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         user: User = self.request.user
         # Verificar si el usuario autenticado es el propietario de la cuenta
-        if user == self.get_object():
+        if user.is_admin:
             return super().partial_update(request, *args, **kwargs)
         else:
             raise PermissionDenied()
@@ -45,14 +49,14 @@ class UserView(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         user: User = self.request.user
         # Verificar si el usuario autenticado es el propietario de la cuenta
-        if user == self.get_object():
+        if user.is_admin:
             return super().destroy(request, *args, **kwargs)
         else:
             raise PermissionDenied()
         
     def list(self, request, *args, **kwargs):
         user: User = self.request.user
-        if user.is_admin and user.is_authenticated:
+        if user.is_admin:
             return super().list(request, *args, **kwargs)
         else:
             raise PermissionDenied()
