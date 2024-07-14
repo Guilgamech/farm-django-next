@@ -62,7 +62,6 @@ class OficinaReadSerializer(serializers.ModelSerializer):
 class TrabajadorSerializer(serializers.ModelSerializer):
     area = serializers.PrimaryKeyRelatedField(queryset=Area.objects.all())
     type = serializers.SerializerMethodField()
-    oficina = serializers.SerializerMethodField()
     
     class Meta:
         model = Trabajador
@@ -75,35 +74,21 @@ class TrabajadorSerializer(serializers.ModelSerializer):
         except Agricola.DoesNotExist:
             return None
 
-    def get_oficina(self, obj):
-        try:
-            oficina = Oficina.objects.get(trabajador_ptr=obj.trabajador_id)
-            return OficinaSerializer(oficina).data
-        except Oficina.DoesNotExist:
-            return None
-
 class TrabajadorReadSerializer(serializers.ModelSerializer):
     area = AreaSerializer()
-    agricola = serializers.SerializerMethodField()
-    oficina = serializers.SerializerMethodField()
+    type = serializers.SerializerMethodField()
 
     class Meta:
         model = Trabajador
         fields = '__all__'
     
-    def get_agricola(self, obj):
-        try:
-            agricola = Agricola.objects.get(trabajador_ptr=obj.trabajador_id)
-            return AgricolaReadSerializer(agricola).data
-        except Agricola.DoesNotExist:
-            return None
+    def get_type(self, obj):
+        if isinstance(obj, Agricola):
+            return "Agricola"
+        elif isinstance(obj, Oficina):
+            return "Oficina"
+        return "Trabajador"
 
-    def get_oficina(self, obj):
-        try:
-            oficina = Oficina.objects.get(trabajador_ptr=obj.trabajador_id)
-            return OficinaReadSerializer(oficina).data
-        except Oficina.DoesNotExist:
-            return None
 
 class IncidenciasSerializer(serializers.ModelSerializer):
     area = serializers.PrimaryKeyRelatedField(queryset=Area.objects.all())
