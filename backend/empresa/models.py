@@ -14,6 +14,9 @@ class Incidencias(models.Model):
     date = models.DateTimeField(null=True, default=None)
     status = models.CharField(max_length=255)
     damage = models.CharField(max_length=255)
+    
+    def __str__(self):
+        return self.type
 
     
 class TipoCultivo(models.Model):

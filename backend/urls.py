@@ -3,7 +3,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from empresa.views import *
-from usuario.views import UserView, LogoutView
+from usuario.views import *
 
 
 router = DefaultRouter()
@@ -19,9 +19,10 @@ router.register(prefix='enfermedades', viewset=EnfermedadesViewSet, basename="en
 router.register(prefix='tratamientos', viewset=TratamientosViewSet, basename="tratamientos")
 router.register(prefix='cultivos', viewset=CultivoViewSet, basename="cultivos")
 router.register(prefix='cultivo_enfermedad', viewset=CultivoEnfermedadViewSet, basename="cultivo_enfermedad")
-
 router.register(prefix='Flota', viewset=FlotaViewSet, basename="Flota")
+
 router.register(prefix='user', viewset=UserView, basename='user')
+router.register(prefix='role', viewset=RoleView, basename='role')
 router.register(prefix='token/logout', viewset=LogoutView, basename='logout_view')
 
 

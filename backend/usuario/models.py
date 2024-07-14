@@ -7,6 +7,10 @@ from django.db import models
 
 class Role(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    
+    def __str__(self):
+        return self.name
+    
 
 
 class UserManager(BaseUserManager):
@@ -32,11 +36,12 @@ class UserManager(BaseUserManager):
         return user
 
 
+
 class User(AbstractBaseUser):
     email = models.EmailField(verbose_name='dirección de email', max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    rol = models.ManyToManyField(Role)
+    rol = models.ForeignKey(Role, on_delete=models.CASCADE, default=None, null=True)
 
     objects = UserManager()
 
@@ -56,3 +61,5 @@ class User(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+    
+
