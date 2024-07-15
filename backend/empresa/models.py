@@ -2,7 +2,7 @@ from django.db import models
 from usuario.models import User
 
 class Area(models.Model):
-    code = models.CharField(max_length=255)
+    code = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     total_area = models.FloatField()
 
@@ -10,7 +10,7 @@ class Area(models.Model):
         return self.name
     
 class Incidencias(models.Model):
-    type = models.CharField(max_length=255)
+    type = models.CharField(max_length=255, unique=True)
     date = models.DateTimeField(null=True, default=None)
     status = models.CharField(max_length=255)
     damage = models.CharField(max_length=255)
@@ -20,14 +20,14 @@ class Incidencias(models.Model):
 
     
 class TipoCultivo(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
 
 
 class TipoFlota(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
@@ -82,7 +82,7 @@ class Cultivo(models.Model):
         ('sembrado', 'Sembrado'),
         ('cocecha', 'Cocecha'),
     )
-    code = models.CharField(max_length=255)
+    code = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
 
     status = models.CharField(max_length=12, choices=STATUS_CHOICES)
@@ -101,7 +101,7 @@ class Flota(models.Model):
         ('deteriorado', 'Deteriorado'),
         ('optimo', 'Optimo'),
     )
-    code = models.CharField(max_length=255)
+    code = models.CharField(max_length=255, unique=True)
     status = models.CharField(max_length=12, choices=STATUS_CHOICES)
     type = models.ForeignKey(TipoFlota, on_delete=models.CASCADE, related_name='flotas')
     manager = models.ForeignKey(Trabajador, on_delete=models.CASCADE, related_name='flotas')
