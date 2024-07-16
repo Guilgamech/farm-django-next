@@ -1,0 +1,37 @@
+.rpv-default-layout__sidebar-headers, .rpv-default-layout__sidebar-headers{
+  display: none!important;
+  
+}
+.rpv-toolbar__right{
+  >div.rpv-toolbar__item{
+    
+      display: none!important;
+    
+  }
+  >.rpv-core__display--block-medium{
+    display: block!important;
+    &:nth-child(3){
+      display: none!important;
+    }
+    &:nth-child(1){
+      display: none!important;
+    }
+  }
+  // display: none!important;
+  // @media (min-width:768px) {
+  //   display: flex!important;    
+  // }
+}
+
+.rpv-toolbar__center{
+  display: none!important;
+  @media (min-width:768px) {
+    display: flex!important;    
+  }
+}
+#rpv-core__tooltip-body-print{
+  transform: translateX(-10px);
+}
+#rpv-core__tooltip-body-search-popover{
+  transform: translateX(12px);
+}

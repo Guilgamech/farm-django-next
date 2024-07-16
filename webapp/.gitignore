@@ -1,0 +1,7 @@
+node_modules/
+.next/
+bun.lockb
+.env
+package-lock.json
+.vscode/
+prisma/migrations

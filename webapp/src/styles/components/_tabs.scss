@@ -1,0 +1,19 @@
+.tabs-appoinment{
+  @apply mt-8 mb-10 max-w-full overflow-hidden;
+  .MuiTab-root{
+    @apply font-heebo text-[15px] text-black capitalize focus:bg-primary/10 rounded-t-md;
+    letter-spacing: normal!important;
+    &.Mui-selected{
+      @apply text-black fw-[700];
+    }
+  }
+  .MuiTabs-flexContainer{
+    @apply border-b-[4px] border-[#dddddd];
+  }
+  .MuiTabs-indicator{
+    @apply bg-primary h-1;
+  }
+  .MuiTouchRipple-root{
+    @apply hidden;
+  }
+}
