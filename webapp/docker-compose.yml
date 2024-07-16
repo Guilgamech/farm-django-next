@@ -1,0 +1,19 @@
+version: '3'
+services:
+
+  farm_db:
+    container_name: farm_db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: farm
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      TZ: 'America/Havana'
+    volumes:
+      - farm_pgdata:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
+
+volumes:
+  farm_pgdata:

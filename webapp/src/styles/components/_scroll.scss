@@ -1,0 +1,68 @@
+.ScrollDashboard {
+  --scrollbar-size: 10px;
+  width: 100%;
+  height: calc(100dvh - 70px);
+  overflow: hidden;
+
+  @media (min-width:768px) {
+    height: calc(100dvh - 78px);
+  }
+
+  .ScrollDashboardViewport {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+  }
+
+  .ScrollDashboardScrollbar {
+    display: flex;
+    /* ensures no selection */
+    user-select: none;
+    /* disable browser handling of all panning and zooming gestures on touch devices */
+    touch-action: none;
+    padding: 2px;
+    @apply bg-white;
+    transition: background 160ms ease-out;
+  }
+
+  .ScrollDashboardScrollbar:hover {
+    opacity: 0.75;
+  }
+
+  .ScrollDashboardScrollbar[data-orientation='vertical'] {
+    width: var(--scrollbar-size);
+  }
+
+  .ScrollDashboardThumb {
+    flex: 1;
+    @apply bg-primary;
+    border-radius: var(--scrollbar-size);
+    position: relative;
+  }
+
+  /* increase target size for touch devices https://www.w3.org/WAI/WCAG21/Understanding/target-size.html */
+  .ScrollDashboardThumb::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .ScrollDashboardCorner {
+    opacity: 0.75;
+  }
+
+  &.panel {
+    width: 100%;
+    height: 100dvh;
+  }
+}
+
+.overflow-y-auto, .scroll-thin {
+  scrollbar-width: thin;
+}

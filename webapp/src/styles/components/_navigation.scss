@@ -1,0 +1,32 @@
+.sub-nav{
+  .sub-nav-item{
+    border:none!important;
+    h3{
+      button{
+        padding: 0 18px;
+        @apply flex items-center rounded-3xl h-[34px] text-primary bg-white transition-colors duration-300 hover:text-white hover:bg-primary hover:no-underline;
+        svg{
+          &:not(.icon){
+            width: 24px!important;
+            height: 24px!important;
+          }
+        }        
+      }
+      &[data-state="open"]{
+        button{
+          @apply bg-primary text-white;
+        }
+      }
+    }
+    &.active{
+      h3{
+        button{
+          @apply bg-primary text-white;
+        }
+      }
+    }
+  }
+  .sub-nav-content{
+    padding: 0!important;    
+  }
+}
