@@ -206,7 +206,7 @@ class AreaCultivoReadSerializer(serializers.ModelSerializer):
 class CultivoReadSerializer(serializers.ModelSerializer):
     type = TipoCultivoSerializer()
     manager = TrabajadorSerializer()
-    area = AreaCultivoReadSerializer(source='area_cultivo',many=True)
+    areas = AreaCultivoReadSerializer(source='area_cultivo',many=True)
     workers = AgricolaSerializer(many=True)
     disease = CultivoEnfermedadReadSerializer(many=True)
 

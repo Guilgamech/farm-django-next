@@ -8,7 +8,7 @@ from usuario.views import *
 
 router = DefaultRouter()
 router.register(prefix='areas', viewset=AreaViewSet, basename="area")
-router.register(prefix='incidencia', viewset=IncidenciaViewSet, basename="incidencia")
+router.register(prefix='incidencias', viewset=IncidenciasViewSet, basename="incidencias")
 router.register(prefix='areacultivo', viewset=AreaCultivoViewSet, basename="areacultivo")
 router.register(prefix='trabajadores', viewset=TrabajadorViewSet, basename="trabajadores")
 router.register(prefix='agricola', viewset=AgricolaViewSet, basename="agricola")
@@ -19,7 +19,7 @@ router.register(prefix='enfermedades', viewset=EnfermedadesViewSet, basename="en
 router.register(prefix='tratamientos', viewset=TratamientosViewSet, basename="tratamientos")
 router.register(prefix='cultivos', viewset=CultivoViewSet, basename="cultivos")
 router.register(prefix='cultivo_enfermedad', viewset=CultivoEnfermedadViewSet, basename="cultivo_enfermedad")
-router.register(prefix='Flota', viewset=FlotaViewSet, basename="Flota")
+router.register(prefix='flota', viewset=FlotaViewSet, basename="flota")
 
 router.register(prefix='user', viewset=UserView, basename='user')
 router.register(prefix='role', viewset=RoleView, basename='role')

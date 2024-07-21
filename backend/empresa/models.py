@@ -14,6 +14,8 @@ class Incidencias(models.Model):
     date = models.DateTimeField(null=True, default=None)
     status = models.CharField(max_length=255)
     damage = models.CharField(max_length=255)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name='Incidencia')
+
     
     def __str__(self):
         return self.type

@@ -53,9 +53,9 @@ class OficinaViewSet(viewsets.ModelViewSet):
     read_serializer_class = OficinaReadSerializer
     permission_classes = [permissions.IsAuthenticated]
     
-class IncidenciaViewSet(NestedViewSetMixin):
+class IncidenciasViewSet(NestedViewSetMixin):
     queryset = Incidencias.objects.all()
-    serializer_class = Incidencias
+    serializer_class = IncidenciasSerializer
     read_serializer_class = IncidenciasReadSerializer
     permission_classes = [permissions.IsAuthenticated]
 
