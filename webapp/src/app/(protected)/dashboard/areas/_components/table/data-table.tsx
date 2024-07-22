@@ -15,8 +15,8 @@ import { TArea } from "@/schema/area.schema"
 import { useAreaStore } from "@/context/area"
 import { BasicMenu } from "@/components/shared/menu"
 import { FormModal } from "@/components/shared/modal"
-import { AreaForm } from "../from/create"
-import { DeleteAreaForm } from "../from/delete"
+import { AreaForm } from "../form/create"
+import { DeleteAreaForm } from "../form/delete"
 
 const columns: ColumnDef<TArea>[] = [
   {

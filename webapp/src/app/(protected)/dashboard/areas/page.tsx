@@ -3,7 +3,7 @@ import { DataTableArea } from "./_components/table";
 import { CardTable } from "@/components/shared/card";
 import { TitleActionBooking } from "@/components/shared/section";
 import { FormModal } from "@/components/shared/modal";
-import { AreaForm } from "./_components/from/create";
+import { AreaForm } from "./_components/form/create";
 
 export default function Areas() {
   return <div className="page-content">
