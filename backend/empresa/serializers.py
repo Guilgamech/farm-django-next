@@ -68,11 +68,11 @@ class TrabajadorSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
     def get_type(self, obj):
-        try:
-            agricola = Agricola.objects.get(trabajador_ptr=obj.trabajador_id)
-            return AgricolaSerializer(agricola).data
-        except Agricola.DoesNotExist:
-            return None
+        agricola = Agricola.objects.filter(trabajador_id = obj.trabajador_id).first()
+        if agricola is not None:
+            return "Agricola"
+        else:
+            return "Oficina"
 
 class TrabajadorReadSerializer(serializers.ModelSerializer):
     area = AreaSerializer()
@@ -83,11 +83,11 @@ class TrabajadorReadSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def get_type(self, obj):
-        if isinstance(obj, Agricola):
+        agricola = Agricola.objects.filter(trabajador_id = obj.trabajador_id).first()
+        if agricola is not None:
             return "Agricola"
-        elif isinstance(obj, Oficina):
+        else:
             return "Oficina"
-        return "Trabajador"
 
 
 class IncidenciasSerializer(serializers.ModelSerializer):
