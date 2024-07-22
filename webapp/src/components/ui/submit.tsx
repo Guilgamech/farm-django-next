@@ -19,3 +19,17 @@ export function SubmitButton({ className = "", text = "Enviar", loadingText = "E
     </div>
   )
 }
+
+export function BasicSubmit({ className = "", text = "Enviar", loadingText = "Enviando", icon = null, loadingIcon = null, pending }: { className?: string, text?: string, loadingText?: string, icon?: ReactNode | null, loadingIcon?: ReactNode | null, pending:boolean }) {
+  return (
+    <div className='flex'>
+      <Button type="submit" className={cn(className, "submit-btn gap-2")} disabled={pending}>
+        {(icon && loadingIcon) ? <>
+          {pending ? <>{loadingIcon} <span>{loadingText}</span></> : <>{icon} <span>{text}</span></>}
+        </> : <>
+          {pending ? <span>{loadingText}</span> : <span>{text}</span>}
+        </>}
+      </Button>
+    </div>
+  )
+}

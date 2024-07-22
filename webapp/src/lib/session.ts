@@ -1,3 +1,4 @@
+"use server"
 import {z} from "zod"
 import { authResponseSchema, authSuccessSchema } from "@/schema/auth";
 import settings from "@/settings";

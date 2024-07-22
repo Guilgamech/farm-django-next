@@ -15,7 +15,7 @@ export default function LinkNavigation({href, isChild=false, icon, text, active}
       setActivePath(href)
     }
   }} className={cn(
-    "rounded-3xl h-[34px] text-[15px] font-bold flex justify-start items-center gap-4 px-[18px] bg-white text-primary",
+    "rounded-3xl h-[40px] text-[15px] font-bold flex justify-start items-center gap-4 px-[18px] bg-white text-primary",
     "hover:bg-primary hover:text-white transition-colors duration-300",
     showActive ? "bg-primary text-white" : ""
   )}>

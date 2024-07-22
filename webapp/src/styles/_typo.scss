@@ -6,4 +6,14 @@
 }
 .link-menu{
   @apply w-full min-w-[150px] flex justify-start gap-2 items-center py-2 px-2 rounded font-medium text-[16px] bg-white text-primary hover:bg-primary hover:text-white;
+  &[aria-selected="true"]{
+    .icon-select{
+        @apply text-primary;
+    }
+    &:hover{
+        .icon-select{
+            @apply text-white;
+        }        
+    }
+  }
 }
