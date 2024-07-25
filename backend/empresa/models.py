@@ -1,5 +1,5 @@
 from django.db import models
-from usuario.models import User
+from usuario.models import Role, User, UserManager
 
 class Area(models.Model):
     code = models.CharField(max_length=255, unique=True)
