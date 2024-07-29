@@ -10,7 +10,7 @@ class Area(models.Model):
         return self.name
     
 class Incidencias(models.Model):
-    type = models.CharField(max_length=255, unique=True)
+    type = models.CharField(max_length=255)
     date = models.DateTimeField(null=True, default=None)
     status = models.CharField(max_length=255)
     damage = models.CharField(max_length=255)
