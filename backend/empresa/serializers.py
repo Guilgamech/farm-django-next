@@ -1,3 +1,4 @@
+from usuario.serializers import RoleSerializer
 from rest_framework import serializers
 from .models import *
 
@@ -6,9 +7,6 @@ class AreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Area
         fields = '__all__'
-
-
-
 
 
 class TipoCultivoSerializer(serializers.ModelSerializer):
@@ -45,14 +43,56 @@ class AgricolaReadSerializer(serializers.ModelSerializer):
 
 class OficinaSerializer(serializers.ModelSerializer):
     area = serializers.PrimaryKeyRelatedField(queryset=Area.objects.all())
+    rol = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all(), allow_null=True)
     
     class Meta:
         model = Oficina
-        fields = '__all__'
+        fields = ('id', 'name', 'ci', 'age', 'direction',  'username', 'password', 'email', 'rol', 'area')  # Agrega 'rol' aquí
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'password': {'write_only': True}
+        }
+        
+    def create(self, validated_data):
+        user = Oficina.objects.create(
+            email=validated_data["email"],
+            name=validated_data["name"],
+            ci=validated_data["ci"],
+            age=validated_data["age"],
+            direction=validated_data["direction"],
+            username=validated_data["username"],
+            rol=validated_data.get("rol", None),  # Agrega 'rol' aquí
+            area=validated_data.get("area", None),  # Agrega 'rol' aquí
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        if validated_data.get('email'):
+            instance.username = validated_data['email']
+        if validated_data.get('name'):
+            instance.username = validated_data['name']
+        if validated_data.get('ci'):
+            instance.username = validated_data['ci']
+        if validated_data.get('age'):
+            instance.username = validated_data['age']
+        if validated_data.get('direction'):
+            instance.username = validated_data['direction']
+        if validated_data.get('username'):
+            instance.username = validated_data['username']
+        if validated_data.get('password'):
+            instance.set_password(validated_data['password'])
+        if validated_data.get('rol'):  # Agrega este bloque
+            instance.rol = validated_data['rol']
+        if validated_data.get('area'):  # Agrega este bloque
+            instance.area = validated_data['area']
+        instance.save()
+        return instance
         
 class OficinaReadSerializer(serializers.ModelSerializer):
     area = AreaSerializer()
-    
+    rol = RoleSerializer()
     class Meta:
         model = Oficina
         fields = '__all__'

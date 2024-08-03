@@ -8,12 +8,10 @@ from django.conf.urls.static import static
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="TODO LIST APIREST",
+        title="Empresa Agricola APIREST",
         default_version='v1',
         description="Django, DjangoRestFramework, Postgres, SimpleJWT",
-        terms_of_service="https://github.com/Guilgamech/todolist",
-        contact=openapi.Contact(email="josemanuel22072000@gmail.com"),
-        license=openapi.License(name="BSD License"),
+
     ),
     public=True,
     permission_classes=[permissions.AllowAny],

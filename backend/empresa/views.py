@@ -41,13 +41,13 @@ class TrabajadorViewSet(viewsets.ReadOnlyModelViewSet):
     
 ####
     
-class AgricolaViewSet(viewsets.ModelViewSet):
+class AgricolaViewSet(NestedViewSetMixin):
     queryset = Agricola.objects.all()
     serializer_class = AgricolaSerializer
     read_serializer_class = AgricolaReadSerializer
     permission_classes = [permissions.IsAuthenticated]
     
-class OficinaViewSet(viewsets.ModelViewSet):
+class OficinaViewSet(NestedViewSetMixin):
     queryset = Oficina.objects.all()
     serializer_class = OficinaSerializer
     read_serializer_class = OficinaReadSerializer
