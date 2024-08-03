@@ -122,7 +122,7 @@ class CultivoEnfermedad(models.Model):
     crop = models.ForeignKey(Cultivo, on_delete=models.CASCADE, related_name='cultivo_enfermedades')
     manager = models.ForeignKey(Agricola, on_delete=models.CASCADE, related_name='cultivo_enfermedades')
     treatment = models.ForeignKey(Tratamientos, on_delete=models.CASCADE, related_name='cultivo_enfermedades')
-    start = models.DateTimeField(auto_now_add=True)
+    start = models.DateTimeField(null=True, default=None)
     end = models.DateTimeField(null=True, default=None)
     grade = models.CharField(max_length=12, choices=STATUS_CHOICES)
 
@@ -133,7 +133,7 @@ class CultivoEnfermedad(models.Model):
 class AreaCultivo(models.Model):
     area = models.ForeignKey(to=Area, on_delete=models.CASCADE, related_name="area_cultivo")
     crop = models.ForeignKey(to=Cultivo, on_delete=models.CASCADE, related_name="area_cultivo")
-    date_planted = models.DateTimeField(auto_now_add=True)
+    date_planted = models.DateTimeField(null=True, default=None)
     date_harved = models.DateTimeField(null=True, default=None)
     
     class Meta:

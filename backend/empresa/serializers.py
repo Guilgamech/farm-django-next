@@ -182,8 +182,10 @@ class CultivoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cultivo
-        fields = ('code', 'name', 'status', 'type', 'manager')
-
+        fields = ('id', 'code', 'name', 'status', 'type', 'manager')
+        extra_kwargs = {
+            'id': {'read_only': True},
+        }
 
 class FlotaSerializer(serializers.ModelSerializer):
     type = serializers.PrimaryKeyRelatedField(queryset=TipoFlota.objects.all())
