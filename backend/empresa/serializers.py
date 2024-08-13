@@ -251,7 +251,7 @@ class AgricolaCultivoSerializer(serializers.ModelSerializer):
     worker = serializers.PrimaryKeyRelatedField(queryset=Agricola.objects.all())
 
     class Meta:
-        model = Cultivo
+        model = AgricolaCultivo
         fields = '__all__'
         
 class AgricolaCultivoReadSerializer(serializers.ModelSerializer):
