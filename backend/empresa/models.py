@@ -14,7 +14,7 @@ class Incidencias(models.Model):
     date = models.DateTimeField(null=True, default=None)
     status = models.CharField(max_length=255)
     damage = models.CharField(max_length=255)
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name='Incidencia')
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name='incidencias')
 
     
     def __str__(self):
@@ -40,7 +40,7 @@ class Trabajador(models.Model):
     ci = models.CharField(max_length=255)
     age = models.IntegerField()
     direction = models.CharField(max_length=255)
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name='Agricola')
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name='trabajadores')
     
     def __str__(self):
         return self.name
@@ -90,9 +90,9 @@ class Cultivo(models.Model):
     status = models.CharField(max_length=12, choices=STATUS_CHOICES)
     type = models.ForeignKey(TipoCultivo, on_delete=models.CASCADE, related_name='cultivos')
     manager = models.ForeignKey(Trabajador, on_delete=models.CASCADE, related_name='manager_cultivo')
-    areas = models.ManyToManyField(Area, through='AreaCultivo')
-    workers = models.ManyToManyField(Agricola, related_name='worker_cultivos')
-    disease = models.ManyToManyField(Enfermedades, through="CultivoEnfermedad", related_name='cultivo_enfermedad')
+    areas = models.ManyToManyField(Area, through='AreaCultivo', related_name='areas_cultivo')
+    workers = models.ManyToManyField(Agricola, through='AgricolaCultivo', related_name='agricolas_cultivo')
+    disease = models.ManyToManyField(Enfermedades, through="CultivoEnfermedad", related_name='enfermedades_cultivo')
 
     def __str__(self):
         return self.name
@@ -118,10 +118,10 @@ class CultivoEnfermedad(models.Model):
         ('medio', 'Medio'),
         ('grave', 'Grave'),
     )
-    disease = models.ForeignKey(Enfermedades, on_delete=models.CASCADE, related_name='cultivo_enfermedades')
-    crop = models.ForeignKey(Cultivo, on_delete=models.CASCADE, related_name='cultivo_enfermedades')
-    manager = models.ForeignKey(Agricola, on_delete=models.CASCADE, related_name='cultivo_enfermedades')
-    treatment = models.ForeignKey(Tratamientos, on_delete=models.CASCADE, related_name='cultivo_enfermedades')
+    disease = models.ForeignKey(Enfermedades, on_delete=models.CASCADE, related_name='enfermedad_cultivos')
+    crop = models.ForeignKey(Cultivo, on_delete=models.CASCADE, related_name='enfermedad_cultivos')
+    manager = models.ForeignKey(Agricola, on_delete=models.CASCADE, related_name='enfermedad_cultivos')
+    treatment = models.ForeignKey(Tratamientos, on_delete=models.CASCADE, related_name='enfermedad_cultivos')
     start = models.DateTimeField(null=True, default=None)
     end = models.DateTimeField(null=True, default=None)
     grade = models.CharField(max_length=12, choices=STATUS_CHOICES)
@@ -131,8 +131,8 @@ class CultivoEnfermedad(models.Model):
 
 
 class AreaCultivo(models.Model):
-    area = models.ForeignKey(to=Area, on_delete=models.CASCADE, related_name="area_cultivo")
-    crop = models.ForeignKey(to=Cultivo, on_delete=models.CASCADE, related_name="area_cultivo")
+    area = models.ForeignKey(to=Area, on_delete=models.CASCADE, related_name="area_cultivos")
+    crop = models.ForeignKey(to=Cultivo, on_delete=models.CASCADE, related_name="area_cultivos")
     date_planted = models.DateTimeField(null=True, default=None)
     date_harved = models.DateTimeField(null=True, default=None)
     
@@ -142,7 +142,14 @@ class AreaCultivo(models.Model):
     def __str__(self):
         init = "AreaCultivo{"
         end = "}"
-        return f"{init} area:{str(self.area)}, crop:{str(self.crop)}"
+        return f"{init} area:{str(self.area)}, crop:{str(self.crop)}{end}"    
     
     
-    
+class AgricolaCultivo(models.Model):
+    crop = models.ForeignKey(Cultivo, on_delete=models.CASCADE, related_name="agricola_cultivos")
+    worker = models.ForeignKey(Agricola, on_delete=models.CASCADE, related_name="agricola_cultivos")
+    class Meta:
+        unique_together = ('crop', 'worker')
+
+    def __str__(self):
+        return f"{self.crop.name} - {self.worker.name}"

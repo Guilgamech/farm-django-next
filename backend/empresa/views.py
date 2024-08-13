@@ -78,6 +78,7 @@ class CultivoViewSet(NestedViewSetMixin):
     permission_classes = [permissions.IsAuthenticated]
 
 
+
 class FlotaViewSet(NestedViewSetMixin):
     queryset = Flota.objects.all()
     serializer_class = FlotaSerializer
@@ -94,4 +95,10 @@ class AreaCultivoViewSet(NestedViewSetMixin):
     queryset = AreaCultivo.objects.all()
     serializer_class = AreaCultivoSerializer
     read_serializer_class = AreaCultivoReadSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+class AgricolaCultivoViewSet(NestedViewSetMixin):
+    queryset = AgricolaCultivo.objects.all()
+    serializer_class = AgricolaCultivoSerializer
+    read_serializer_class = AgricolaCultivoReadSerializer
     permission_classes = [permissions.IsAuthenticated]

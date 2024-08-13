@@ -185,6 +185,7 @@ class CultivoSerializer(serializers.ModelSerializer):
         fields = ('id', 'code', 'name', 'status', 'type', 'manager')
         extra_kwargs = {
             'id': {'read_only': True},
+
         }
 
 class FlotaSerializer(serializers.ModelSerializer):
@@ -221,12 +222,14 @@ class CultivoEnfermedadSerializer(serializers.ModelSerializer):
 
 class CultivoEnfermedadReadSerializer(serializers.ModelSerializer):
     manager = TrabajadorSerializer()
+    crop = CultivoSerializer()
+    
     treatment = TratamientosReadSerializer()
     disease = EnfermedadesReadSerializer()
 
     class Meta:
         model = CultivoEnfermedad
-        fields = ('disease', 'manager', 'treatment', 'start', 'end', 'grade')
+        fields = '__all__'
         
 class AreaCultivoSerializer(serializers.ModelSerializer):
     area = serializers.PrimaryKeyRelatedField(queryset=Area.objects.all())
@@ -243,14 +246,28 @@ class AreaCultivoReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = AreaCultivo
         fields = '__all__'
+class AgricolaCultivoSerializer(serializers.ModelSerializer):
+    crop = serializers.PrimaryKeyRelatedField(queryset=Cultivo.objects.all())
+    worker = serializers.PrimaryKeyRelatedField(queryset=Agricola.objects.all())
 
+    class Meta:
+        model = Cultivo
+        fields = '__all__'
+        
+class AgricolaCultivoReadSerializer(serializers.ModelSerializer):
+    crop = CultivoSerializer()
+    worker = AgricolaSerializer()
+
+    class Meta:
+        model = AgricolaCultivo
+        fields = '__all__'
 
 class CultivoReadSerializer(serializers.ModelSerializer):
     type = TipoCultivoSerializer()
     manager = TrabajadorSerializer()
-    areas = AreaCultivoReadSerializer(source='area_cultivo',many=True)
-    workers = AgricolaSerializer(many=True)
-    disease = CultivoEnfermedadReadSerializer(many=True)
+    areas = AreaCultivoReadSerializer(source='area_cultivos',many=True)
+    workers = AgricolaCultivoReadSerializer(source='agricola_cultivos',many=True)
+    diseases = CultivoEnfermedadReadSerializer(source='enfermedad_cultivos', many=True)
 
     class Meta:
         model = Cultivo
