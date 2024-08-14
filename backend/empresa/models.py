@@ -1,7 +1,29 @@
 from django.db import models
 from usuario.models import Role, User, UserManager
 
-class Area(models.Model):
+class ActivosManager(models.Manager):
+  def get_queryset(self):
+    return super().get_queryset().filter(is_deleted=False)
+
+class Base(models.Model):
+    is_deleted = models.BooleanField(default=False)
+    
+    objects = ActivosManager()
+    
+    def soft_delete(self):
+        self.is_deleted = True
+        self.save()
+
+    def restore(self):
+        self.is_deleted = False
+        self.save()
+
+    def delete(self, *args, **kwargs):
+        self.soft_delete()
+    class Meta:
+        abstract = True
+
+class Area(Base):
     code = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     total_area = models.FloatField()
@@ -9,7 +31,7 @@ class Area(models.Model):
     def __str__(self):
         return self.name
     
-class Incidencias(models.Model):
+class Incidencias(Base):
     type = models.CharField(max_length=255)
     date = models.DateTimeField(null=True, default=None)
     status = models.CharField(max_length=255)
@@ -21,20 +43,20 @@ class Incidencias(models.Model):
         return self.type
 
     
-class TipoCultivo(models.Model):
+class TipoCultivo(Base):
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
 
 
-class TipoFlota(models.Model):
+class TipoFlota(Base):
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
     
-class Trabajador(models.Model):
+class Trabajador(Base):
     trabajador_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     ci = models.CharField(max_length=255)
@@ -60,7 +82,7 @@ class Oficina(Trabajador, User):
         return self.username
 
 
-class Enfermedades(models.Model):
+class Enfermedades(Base):
     name = models.CharField(max_length=255)
     category = models.CharField(max_length=255)
     type_crops = models.ForeignKey(TipoCultivo, on_delete=models.CASCADE, related_name='enfermedades')
@@ -69,7 +91,7 @@ class Enfermedades(models.Model):
         return self.name
 
 
-class Tratamientos(models.Model):
+class Tratamientos(Base):
     name = models.CharField(max_length=255)
     treatment = models.TextField()
     disease = models.ForeignKey(Enfermedades, on_delete=models.CASCADE, related_name='tratamientos')
@@ -78,11 +100,11 @@ class Tratamientos(models.Model):
         return self.name
 
 
-class Cultivo(models.Model):
+class Cultivo(Base):
     STATUS_CHOICES = (
-        ('semilleo', 'Semilleo'),
         ('sembrado', 'Sembrado'),
-        ('cocecha', 'Cocecha'),
+        ('cosechado', 'Cosechado'),
+        ('recogido', 'Recogido'),
     )
     code = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
@@ -98,7 +120,7 @@ class Cultivo(models.Model):
         return self.name
 
 
-class Flota(models.Model):
+class Flota(Base):
     STATUS_CHOICES = (
         ('deteriorado', 'Deteriorado'),
         ('optimo', 'Optimo'),
