@@ -215,6 +215,18 @@ class CultivoEnfermedadSerializer(serializers.ModelSerializer):
     disease = serializers.PrimaryKeyRelatedField(queryset=Enfermedades.objects.all())
     crop = serializers.PrimaryKeyRelatedField(queryset=Cultivo.objects.all())
 
+    def validate(self, data):
+        start = data.get('start')
+        end = data.get('end')
+        
+        if start and end:
+            if end <= start:
+                raise serializers.ValidationError({
+                    'end': 'El campo Fecha de Incio no puede ser menor o igual al campo Fecha Fin.'
+                })
+        
+        return data
+    
     class Meta:
         model = CultivoEnfermedad
         fields = '__all__'
@@ -235,6 +247,17 @@ class AreaCultivoSerializer(serializers.ModelSerializer):
     area = serializers.PrimaryKeyRelatedField(queryset=Area.objects.all())
     crop = serializers.PrimaryKeyRelatedField(queryset=Cultivo.objects.all())
     
+    def validate(self, data):
+        date_planted = data.get('date_planted')
+        date_harved = data.get('date_harved')
+        
+        if date_planted and date_harved:
+            if date_harved <= date_planted:
+                raise serializers.ValidationError({
+                    'date_harved': 'El campo Fecha de Cocecha no puede ser menor o igual al campo Fecha de Plantacion.'
+                })
+        
+        return data
     class Meta:
         model = AreaCultivo
         fields = '__all__'
