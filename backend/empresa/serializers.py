@@ -216,13 +216,17 @@ class CultivoEnfermedadSerializer(serializers.ModelSerializer):
     crop = serializers.PrimaryKeyRelatedField(queryset=Cultivo.objects.all())
 
     def validate(self, data):
-        start = data.get('start')
-        end = data.get('end')
+        # Obtenemos la instancia actual si estamos en una actualización
+        instance = getattr(self, 'instance', None)
         
-        if start and end:
-            if end <= start:
+        # Usamos los valores del cuerpo de la solicitud, o si no existen, de la instancia actual
+        date_start = data.get('start', instance.start if instance else None)
+        date_end = data.get('end', instance.end if instance else None)
+        
+        if date_start and date_end:
+            if date_end <= date_start:
                 raise serializers.ValidationError({
-                    'end': 'El campo Fecha de Incio no puede ser menor o igual al campo Fecha Fin.'
+                    'end': 'El campo Fecha Fin no puede ser menor o igual al campo Fecha de Inicio.'
                 })
         
         return data
@@ -248,8 +252,12 @@ class AreaCultivoSerializer(serializers.ModelSerializer):
     crop = serializers.PrimaryKeyRelatedField(queryset=Cultivo.objects.all())
     
     def validate(self, data):
-        date_planted = data.get('date_planted')
-        date_harved = data.get('date_harved')
+        # Obtenemos la instancia actual si estamos en una actualización
+        instance = getattr(self, 'instance', None)
+        
+        # Usamos los valores del cuerpo de la solicitud, o si no existen, de la instancia actual
+        date_planted = data.get('date_planted', instance.date_planted if instance else None)
+        date_harved = data.get('date_harved', instance.date_harved if instance else None)
         
         if date_planted and date_harved:
             if date_harved <= date_planted:
