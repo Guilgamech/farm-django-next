@@ -1,7 +1,8 @@
 "use server";
-import { tipoflotaValidationSchema, TTipoFlotaDeleteActionState, TTipoFlotaFormActionState } from "@/schema/tipof.schema";
+import { tipoflotaValidationSchema, TTipoFlota, TTipoFlotaDeleteActionState, TTipoFlotaFormActionState } from "@/schema/tipof.schema";
 import * as apiTipoFlota from "@/lib/tipof.api";
 import { getSession } from "@/lib/session";
+import { parseErrors } from "@/lib/utils";
 export const tipoflotaCreateEditAction = async (prevState: TTipoFlotaFormActionState, data: FormData) => {
 	const formData = Object.fromEntries(data);
 	const parsed = await tipoflotaValidationSchema.safeParseAsync(formData);
@@ -25,39 +26,41 @@ export const tipoflotaCreateEditAction = async (prevState: TTipoFlotaFormActionS
 			const isEditAction = typeof prevState.id !== "undefined";
 			if (isEditAction && prevState.id !== undefined) {
 				const result = await apiTipoFlota.update({ access: session.access, values: { id: prevState.id, data: { ...parsed.data } } });
-				if (result === "Unauthorized") {
-					prevState = {
-						...prevState,
-						type: "error",
-						errors: { root: "No está autorizado" },
-					};
-				} else {
-					prevState = {
+        if (result.type === 'success'){
+          prevState = {
 						...prevState,
 						type: "edited",
-						tipoflota: result,
+						tipoflota: result.data as TTipoFlota,
 						toast: { title: "Correcto", message: "Operación realizada correctamente", type: "success" },
 					};
-				}
-			} else {
-				const result = await apiTipoFlota.create({ access: session.access, data: { ...parsed.data } });
-				if (result === "Unauthorized") {
-					prevState = {
+        } else {
+          const responseError = result.data as Record<string, string | string[]>          
+          prevState = {
 						...prevState,
 						type: "error",
-						errors: { root: "No está autorizado" },
+						errors: parseErrors(responseError),
 					};
-				} else {
-					prevState = {
+        }
+			} else {
+				const result = await apiTipoFlota.create({ access: session.access, data: { ...parsed.data } });
+        if (result.type === 'success'){
+          prevState = {
 						...prevState,
 						type: "created",
 						fields: {
 							name: "",
 						},
-						tipoflota: result,
+						tipoflota: result.data as TTipoFlota,
 						toast: { title: "Correcto", message: "Operación realizada correctamente", type: "success" },
 					};
-				}
+        }else {
+          const responseError = result.data as Record<string, string | string[]>
+          prevState = {
+						...prevState,
+						type: "error",
+						errors: parseErrors(responseError),
+					};
+        }
 			}
 		} else {
 			const formErrors = parsed.error.formErrors.fieldErrors;
@@ -82,7 +85,7 @@ export const tipoflotaDeleteAction = async (prevState: TTipoFlotaDeleteActionSta
 	const session = await getSession();
 	if (session?.access) {
 		const result = await apiTipoFlota.destroy({access:session.access, id});
-    if(result){
+    if(result.type === "success"){
       prevState = {
         ...prevState,
         type:"deleted",

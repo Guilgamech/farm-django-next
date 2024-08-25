@@ -20,7 +20,6 @@ export const loginAction = async (prevState: PrevStateLogin, data: FormData) => 
 			await setUserCookies({email, access:response.access});
 			redirect("/dashboard");
 		} else {
-      console.log(response)
 			if (response.error) {
 				return {
 					fields: parsed.data,

@@ -59,7 +59,7 @@ export const WrapperPrintFlotasReport = () => {
         {filteredCultivos.length > 0 ? (
           <div className="w-full border-2 border-primary flex flex-wrap justify-around gap-6 mt-5 px-5 py-8">
             {filteredCultivos.map(el => (
-              <div key={`flota-${el.id}`} className="flex flex-col w-[30%] border-2 border-primary">
+              <div key={`cultivo-${el.id}`} className="flex flex-col w-[30%] border-2 border-primary">
                 <p className="flex px-2 justify-start gap-2 pt-2 mb-2">
                   <b className="flex min-w-[100px] justify-end">Código:</b>
                   <span className="flex w-full">{el.code}</span>

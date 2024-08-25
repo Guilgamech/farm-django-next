@@ -13,42 +13,33 @@ export const list = async ({access}:{access:string})=>{
   if(response.type === "success"){
     return response.data as TTipoFlota[]
   }else{
-    return "Unauthorized"
+    return [] as TTipoFlota[]
   }
 }
 
 export const create = async ({access, data}:{access:string, data:TTipoFlotaFields})=>{
-  let response = await apiFetch({
+  return await apiFetch({
     endpoint: "/tipo_flota/",
     access,
     method: "POST",
     data: {...data}
   })
-  if(response.type === "success"){
-    return response.data as TTipoFlota
-  }else{
-    return "Unauthorized"
-  }
+
 }
 export const update = async ({access, values:{id, data}}:{access:string, values:{id:number, data:TTipoFlotaFields}})=>{
-  let response = await apiFetch({
+  return await apiFetch({
     endpoint: `/tipo_flota/${id}/`,
     access,
     method: "PUT",
     data: {...data}
   })
-  if(response.type === "success"){
-    return response.data as TTipoFlota
-  }else{
-    return "Unauthorized"
-  }
+
 }
 
 export const destroy = async({access, id}:{access:string; id:number})=>{
-  let response = await apiFetch({
+  return await apiFetch({
     endpoint: `/tipo_flota/${id}/`,
     access,
     method: "DELETE"
   })
-  return response.type === "success"
 }

@@ -1,18 +1,30 @@
 "use client"
-import { TIncidencia } from "@/schema/incidencia.schema";
+import { TIncidencia, TIncidenciaRead } from "@/schema/incidencia.schema";
 import { ReactNode, useEffect } from "react";
 import { useIncidenciaStore } from "./incidencia.store";
+import { TArea } from "@/schema/area.schema";
+import { useAreaStore } from "../area";
 
-export const IncidenciaStoreProvider = ({ children, incidencias}: {
+  export const IncidenciaStoreProvider = ({ 
+    children,
+    incidencias,
+    areas ,
+     }: {
     children: ReactNode;
-    incidencias: TIncidencia[];
+    incidencias: TIncidenciaRead[];
+    areas: TArea[],
 }) => {
     const { setIncidencias, setFetchingIncidencias } = useIncidenciaStore();
+    const {setAreas, setFetchingAreas} = useAreaStore();
 
     useEffect(() => {
         setIncidencias(incidencias);
         setFetchingIncidencias(false);
-    }, [incidencias, setIncidencias, setFetchingIncidencias]);
+        setAreas(areas)
+        setFetchingAreas(false)
+
+    }, []);
 
     return <> {children} </>
-}
+};
+

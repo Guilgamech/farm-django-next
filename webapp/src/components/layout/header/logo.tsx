@@ -9,7 +9,7 @@ export default function Logo({ href, className }: { href: string, className?: st
       className ?? ""
     )}>
       <span className="felx relative">
-      <span className="w-full text-primary uppercase">Empresa Agricola</span>
+      <span className="w-full text-primary uppercase">Empresa Agropecuaria</span>
       </span>
 
     </Link>

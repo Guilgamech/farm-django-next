@@ -37,3 +37,17 @@ export const formatDateStringBig = (date:Date)=>{
   formattedDate = formattedDate.replace(',', ' at'); // Replace ',' with ' at'
   return formattedDate;
 }
+
+export const parseErrors = (data:Record<string, string | string[]>)=>{
+  const keysData = Object.keys(data);
+  if (keysData.includes("error") && data["error"] === 'api-error'){
+    return { root: "Error en la api, contacte al administrador" }
+  }
+  else if (keysData.includes("error") && data["error"] === "no-autorizado"){
+    return { root: "No está autorizado" }
+  }
+  else if (keysData.includes("non_field_errors")){
+    return { root: "La relación ya existe en la base de datos" }
+  }
+  return {...data, root:"Rectifica los campos con error"}
+}

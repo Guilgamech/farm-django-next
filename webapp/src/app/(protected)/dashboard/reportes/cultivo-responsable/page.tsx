@@ -4,7 +4,7 @@ import { TitleActionBooking } from "@/components/shared/section";
 import { WrapperPrintFlotasReport } from "./_components/wrapper-print";
 import { ButtonCultivoReportPrint } from "./_components/button-print";
 
-export default function FlotaEstado() {
+export default function CultivoResponsable() {
   return (
     <div className="page-content">
       <TitleActionBooking

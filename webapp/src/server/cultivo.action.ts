@@ -1,11 +1,12 @@
-import { cultivoValidationSchema, TCultivoDeleteActionState, TCultivoFormActionState } from "@/schema/cultivo.schema";
+"use server";
+import { cultivoValidationSchema, TCultivo, TCultivoDeleteActionState, TCultivoFormActionState, TCultivoRead } from "@/schema/cultivo.schema";
 import * as apiCultivo from "@/lib/cultivo.api"; // Importa el API adecuado para Cultivo
 import { getSession } from "@/lib/session";
+import { parseErrors } from "@/lib/utils";
 
 // Acción para crear o editar un cultivo
 export const cultivoCreateEditAction = async (prevState: TCultivoFormActionState, data: FormData) => {
   const formData = Object.fromEntries(data);
-  console.log(formData);
   const parsed = await cultivoValidationSchema.safeParseAsync(formData);
 
   // Estado inicial por defecto
@@ -32,44 +33,44 @@ export const cultivoCreateEditAction = async (prevState: TCultivoFormActionState
       const isEditAction = typeof prevState.id !== "undefined";
       if (isEditAction && prevState.id !== undefined) {
         const result = await apiCultivo.update({ access: session.access, values: { id: prevState.id, data: { ...parsed.data } } });
-        if (result === "Unauthorized") {
-          prevState = {
-            ...prevState,
-            type: "error",
-            errors: { root: "No está autorizado" },
-          };
-        } else {
-          prevState = {
-            ...prevState,
-            type: "edited",
-            cultivo: result,
-            toast: { title: "Correcto", message: "Operación realizada correctamente", type: "success" },
-          };
-        }
-      } else {
-        const result = await apiCultivo.create({ access: session.access, data: { 
-          ...parsed.data,
-        } });
-        if (result === "Unauthorized") {
-          prevState = {
-            ...prevState,
-            type: "error",
-            errors: { root: "No está autorizado" },
-          };
-        } else {
-          prevState = {
-            ...prevState,
-            type: "created",
-            fields: {
+    if (result.type === 'success'){
+      prevState = {
+        ...prevState,
+        type: "edited",
+        cultivo: result.data as TCultivo,
+        toast: { title: "Correcto", message: "Operación realizada correctamente", type: "success" },
+      };
+    } else {
+      const responseError = result.data as Record<string, string | string[]>          
+      prevState = {
+        ...prevState,
+        type: "error",
+        errors: parseErrors(responseError),
+      };
+    }
+  }else {
+    const result = await apiCultivo.create({ access: session.access, data: { ...parsed.data } });
+    if (result.type === 'success'){
+    prevState = {
+        ...prevState,
+        type: "created",
+        fields: {
               code: "",
               name: "",
               status: "",
               type: "",
               manager: "",
             },
-            cultivo: result,
+            cultivo: result.data as TCultivo,
             toast: { title: "Correcto", message: "Operación realizada correctamente", type: "success" },
           };
+        }else {
+          const responseError = result.data as Record<string, string | string[]>
+          prevState = {
+						...prevState,
+						type: "error",
+						errors: parseErrors(responseError),
+					};
         }
       }
     } else {
@@ -100,7 +101,7 @@ export const cultivoDeleteAction = async (prevState: TCultivoDeleteActionState, 
   const session = await getSession();
   if (session?.access) {
     const result = await apiCultivo.destroy({ access: session.access, id });
-    if (result) {
+    if (result.type === "success") {
       prevState = {
         ...prevState,
         type: "deleted",

@@ -1,0 +1,310 @@
+# Query: manager
+# ContextLines: 1
+
+97 results - 27 files
+
+src/app/(protected)/dashboard/cultivos/[id]/_components/detail.tsx:
+  22          <p className="text-xl"><b>Estado: </b>{cultivo.status}</p>
+  23:         <p className="text-xl"><b>Jefe: </b>{cultivo.manager.name}</p>
+  24          <p className="text-xl"><b>Tipo De Cultivo: </b>{cultivo.type.name}</p>
+
+src/app/(protected)/dashboard/cultivos/[id]/enfermedades/_components/form/disease/client.tsx:
+   66        treatment: '',
+   67:       manager: '',
+   68        grade: '',
+
+  197              control={form.control}
+  198:             name="manager"
+  199              render={({ field }) => (
+
+src/app/(protected)/dashboard/cultivos/[id]/enfermedades/_components/table/data-table.tsx:
+   65    {
+   66:     accessorKey: "manager",
+   67      header: ({ column }) => {
+
+   85      },
+   86:     cell: ({ row }) => <div>{row.original.manager.name}</div>,
+   87    },
+
+  247        showHeader
+  248:       placeHolderSearch="Filtrar por código, estado, tipo, encargado, área ..."
+  249        isLoading={fetchingEnfermedadCultivos}
+
+src/app/(protected)/dashboard/cultivos/[id]/plantaciones/_components/table/data-table.tsx:
+  180        showHeader
+  181:       placeHolderSearch="Filtrar por código, estado, tipo, encargado, área ..."
+  182        isLoading={fetchingAreaCultivos}
+
+src/app/(protected)/dashboard/cultivos/[id]/trabajadores/_components/table/data-table.tsx:
+  110        showHeader
+  111:       placeHolderSearch="Filtrar por código, estado, tipo, encargado, área ..."
+  112        isLoading={fetchingAgricolaCultivos}
+
+src/app/(protected)/dashboard/cultivos/gestionar/_components/form/create/client.tsx:
+   59      type: typeof row?.type !== "undefined" ? String(row.type.id) : "",
+   60:     manager: typeof row?.manager !== "undefined" ? String(row.manager.trabajador_id) : "",
+   61    };
+
+  104          type: tipocultivos.find(el => el.id === state.cultivo?.type ?? 0) ?? tipocultivos[0],
+  105:         manager: trabajadores.find(el => el.trabajador_id === state.cultivo?.manager ?? 0) ?? trabajadores[0]
+  106        };
+
+  113          type: tipocultivos.find(el => el.id === state.cultivo?.type ?? 0) ?? tipocultivos[0],
+  114:         manager: trabajadores.find(el => el.trabajador_id === state.cultivo?.manager ?? 0) ?? trabajadores[0]
+  115        };
+
+  230              control={form.control}
+  231:             name="manager"
+  232              render={({ field }) => (
+
+src/app/(protected)/dashboard/cultivos/gestionar/_components/table/data-table.tsx:
+  109    {
+  110:     accessorKey: "manager",
+  111      header: ({ column }) => {
+
+  129      },
+  130:     cell: ({ row }) => <div>{row.original.manager.name}</div>,
+  131    },
+
+  164  const globalFilterFn: FilterFn<TCultivoRead> = (row, columnId, filterValue, addMeta) => {
+  165:   const { code, status, type, manager } = row.original;
+  166  
+
+  170      type.name.toLowerCase().includes(String(filterValue).toLowerCase()) ||
+  171:     manager.name.toLowerCase().includes(String(filterValue).toLowerCase())
+  172    );
+
+  188        showHeader
+  189:       placeHolderSearch="Filtrar por código, estado, tipo, manager, área ..."
+  190        isLoading={fetchingCultivos}
+
+src/app/(protected)/dashboard/enfermedades/gestionar/_components/table/data-table.tsx:
+  136        showHeader
+  137:       placeHolderSearch="Filtrar por código, estado, tipo, manager, área ..."
+  138        isLoading={fetchingEnfermedades}
+
+src/app/(protected)/dashboard/enfermedades/tratamientos/_components/table/data-table.tsx:
+  136        showHeader
+  137:       placeHolderSearch="Filtrar por código, estado, tipo, manager, área ..."
+  138        isLoading={fetchingTratamientos}
+
+src/app/(protected)/dashboard/flotas/gestionar/_components/form/create/client.tsx:
+   56      type: typeof row?.type !== "undefined" ? String(row.type.id) : "",
+   57:     manager: typeof row?.manager !== "undefined" ? String(row.manager.trabajador_id) : "",
+   58      area: typeof row?.area !== "undefined" ? String(row.area.id) : "",
+
+  105          area: areas.find(el => el.id === state.flota?.area ?? 0) ?? areas[0],
+  106:         manager: trabajadores.find(el => el.trabajador_id === state.flota?.manager ?? 0) ?? trabajadores[0]
+  107        }
+
+  115          area: areas.find(el => el.id === state.flota?.area ?? 0) ?? areas[0],
+  116:         manager: trabajadores.find(el => el.trabajador_id === state.flota?.manager ?? 0) ?? trabajadores[0]
+  117        }
+
+  239              control={form.control}
+  240:             name="manager"
+  241              render={({ field }) => (
+
+src/app/(protected)/dashboard/flotas/gestionar/_components/table/data-table.tsx:
+   85    {
+   86:     accessorKey: "manager",
+   87      header: ({ column }) => {
+
+  105      },
+  106:     cell: ({ row }) => <div>{row.original.manager.name}</div>,
+  107    },
+
+  159  const globalFilterFn: FilterFn<TFlotaRead> = (row, columnId, filterValue, addMeta) => {
+  160:   const { code, status, type, manager, area } = row.original;
+  161  
+
+  165      type.name.toLowerCase().includes(String(filterValue).toLowerCase()) ||
+  166:     manager.name.toLowerCase().includes(String(filterValue).toLowerCase()) ||
+  167      area.name.toLowerCase().includes(String(filterValue).toLowerCase())
+
+  185        showHeader
+  186:       placeHolderSearch="Filtrar por código, estado, tipo, manager, área ..."
+  187        isLoading={fetchingFlotas}
+
+src/app/(protected)/dashboard/reportes/cultivo-area/_components/wrapper-print.tsx:
+  11    const { areas } = useAreaStore();
+  12:   const [selectedArea, setSelectedArea] = useState<string | null>(null); // Estado para el manager seleccionado
+  13    const refPrintContainer = useRef<HTMLDivElement | null>(null);
+
+  28  
+  29:   // Filtra los cultivos basados en el manager seleccionado
+  30    const filteredCultivos = selectedArea
+
+src/app/(protected)/dashboard/reportes/cultivo-recoger/_components/wrapper-print.tsx:
+  78                    <b className="flex min-w-[100px] justify-end">Responsable:</b>
+  79:                   <span className="flex w-full">{el.manager.name}</span>
+  80                  </p>
+
+src/app/(protected)/dashboard/reportes/cultivo-responsable/_components/wrapper-print.tsx:
+  11    const { trabajadores } = useTrabajadorStore();
+  12:   const [selectedManager, setSelectedManager] = useState<string | null>(null); // Estado para el manager seleccionado
+  13    const refPrintContainer = useRef<HTMLDivElement | null>(null);
+
+  28  
+  29:   // Filtra los cultivos basados en el manager seleccionado
+  30:   const filteredCultivos = selectedManager
+  31:     ? cultivos.filter(cultivo => String(cultivo.manager.trabajador_id) === selectedManager)
+  32      : cultivos;
+
+  49                options={trabajadores}
+  50:               value={trabajadores.find(el => String(el.trabajador_id) === selectedManager) ?? null}
+  51:               onChange={(option) => setSelectedManager(option?.trabajador_id ? String(option.trabajador_id) : null)}
+  52                emptyOption="Seleccione el Responsable"
+
+  80                    <b className="flex min-w-[100px] justify-end">Responsable:</b>
+  81:                   <span className="flex w-full">{el.manager.name}</span>
+  82                  </p>
+
+src/app/(protected)/dashboard/reportes/incidencia-area/_components/wrapper-print.tsx:
+  12    const { areas } = useAreaStore();
+  13:   const [selectedArea, setSelectedArea] = useState<string | null>(null); // Estado para el manager seleccionado
+  14    const refPrintContainer = useRef<HTMLDivElement | null>(null);
+
+  29  
+  30:   // Filtra los incidencias basados en el manager seleccionado
+  31    const filteredIncidencias = selectedArea
+
+src/app/(protected)/dashboard/trabajadores/gestionar-personal-agricola/_components/table/data-table.tsx:
+  209        showHeader
+  210:       placeHolderSearch="Filtrar por código, estado, tipo, manager, área ..."
+  211        isLoading={fetchingAgricolas}
+
+src/app/(protected)/dashboard/trabajadores/gestionar-personal-de-oficina/_components/table/data-table.tsx:
+  232        showHeader
+  233:       placeHolderSearch="Filtrar por código, estado, tipo, manager, área ..."
+  234        isLoading={fetchingOficinas}
+
+src/lib/cultivo.api.ts:
+  28        type: Number(data.type),
+  29:       manager: Number(data.manager),
+  30      }
+
+  47        type: Number(data.type),
+  48:       manager: Number(data.manager),
+  49      }
+
+src/lib/flota.api.ts:
+  26      method: "POST",
+  27:     data: { ...data, type: Number(data.type), manager: Number(data.manager), area: Number(data.area) }
+  28    });
+
+  41      method: "PUT",
+  42:     data: { ...data, type: Number(data.type), manager: Number(data.manager), area: Number(data.area) }
+  43    });
+
+src/schema/agricolacultivo.schema.ts:
+   9  	type: z.number(),
+  10: 	manager: z.number(),
+  11  });
+
+src/schema/areacultivo.schema.ts:
+  16  	type: z.number(),
+  17: 	manager: z.number(),
+  18  });
+
+src/schema/cultivo.schema.ts:
+  12  	type: selectFieldSchema, // Assuming type is referenced by ID
+  13: 	manager: selectFieldSchema, // Assuming manager is referenced by ID
+  14  });
+
+  22  	type: number; // Assuming type is referenced by ID
+  23: 	manager: number; // Assuming manager is referenced by ID
+  24  };
+
+  31  	type: TTipoCultivo; // Assuming type is referenced by ID
+  32: 	manager: TTrabajador; // Assuming manager is referenced by ID
+  33  };
+
+  40  	type?: string;
+  41: 	manager?: string;
+  42  	root?: string;
+
+src/schema/enfermedadcultivo.schema.ts:
+   17  	type: z.number(),
+   18: 	manager: z.number(),
+   19  });
+
+   45  	crop: CropSchema,
+   46:     manager: TrabajadorSchema,
+   47  	start: z
+
+   67    treatment: z.infer<typeof TratamientoSchema>,
+   68:   manager: z.infer<typeof TrabajadorSchema>,
+   69    start: Date | null,
+
+   76  	crop: selectFieldSchema, // Cambiado a número según el nuevo formato
+   77: 	manager: selectFieldSchema, // Cambiado a número según el nuevo formato
+   78  	start: z.string().refine((date) => date.length > 1 ? !isNaN(Date.parse(date)) : false, {
+
+   90  	treatment: selectFieldSchema, // Cambiado a número según el nuevo formato
+   91: 	manager: selectFieldSchema, // Cambiado a número según el nuevo formato
+   92  	start: z.string().refine((date) => !isNaN(Date.parse(date)), {
+
+  104  	crop?: string;
+  105: 	manager?: string;
+  106  	treatment?: string;
+
+  129  	treatment: selectFieldSchema, // Cambiado a número según el nuevo formato
+  130: 	manager: selectFieldSchema, // Cambiado a número según el nuevo formato
+  131  	start: z.string().refine((date) => !isNaN(Date.parse(date)), {
+
+  139  	treatment?: string;
+  140: 	manager?: string;
+  141  	start?: string;
+
+src/schema/flota.schema.ts:
+  11    type: selectFieldSchema, // Assuming type is referenced by ID
+  12:   manager: selectFieldSchema, // Assuming manager is referenced by ID
+  13    area: selectFieldSchema // Assuming area is referenced by ID
+
+  21    type: number; // Assuming type is referenced by ID
+  22:   manager: number; // Assuming manager is referenced by ID
+  23    area: number; // Assuming area is referenced by ID
+
+  30    type: TTipoFlota; // Assuming type is referenced by ID
+  31:   manager: TTrabajador; // Assuming manager is referenced by ID
+  32    area: TArea;
+
+  39    type?: string;
+  40:   manager?: string;
+  41    area?: string;
+
+src/server/cultivo.action.ts:
+  19        type: (formData["type"] as string) ?? "",
+  20:       manager: (formData["manager"] as string) ?? "",
+  21      },
+
+  67                type: "",
+  68:               manager: "",
+  69              },
+
+  81          type: formErrors.type?.join(", "),
+  82:         manager: formErrors.manager?.join(", "),
+  83          root: "Corrige los errores",
+
+src/server/enfermedadCultivos.action.ts:
+  49  			treatment: (formData["disease"] as string) ?? "",
+  50: 			manager: (formData["disease"] as string) ?? "",
+  51  			grade: (formData["disease"] as string) ?? "",
+
+  79  						treatment: "",
+  80: 						manager: "",
+  81  						grade: "",
+
+src/server/flota.action.ts:
+  19        type: (formData["type"] as string) ?? "",
+  20:       manager: (formData["manager"] as string) ?? "",
+  21        area: (formData["area"] as string) ?? "",
+
+  67                type: "",
+  68:               manager: "",
+  69                area: "",
+
+  81          type: formErrors.type?.join(", "),
+  82:         manager: formErrors.manager?.join(", "),
+  83          area: formErrors.area?.join(", "),

@@ -19,7 +19,7 @@ export function FormModal({ children, trigger, heading, classNames }: {
       {trigger}
     </DialogTrigger>
     <DialogContent className={cn(
-      "sm:max-w-[425px] p-0",
+      "sm:max-w-[605px] flex flex-col max-h-[100vh] p-0 ",
       classNames?.modalContainer ?? ""
     )}>
       <DialogHeader className="w-full pt-6 px-6">
@@ -30,7 +30,7 @@ export function FormModal({ children, trigger, heading, classNames }: {
           {heading}
         </DialogTitle>
       </DialogHeader>
-      <div className="w-full px-6 pb-6">
+      <div className="w-full px-6 pb-6 overflow-auto flex-1">
         {children}
       </div>
     </DialogContent>

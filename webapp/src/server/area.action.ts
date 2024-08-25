@@ -1,7 +1,8 @@
 "use server";
-import { areaValidationSchema, TAreaDeleteActionState, TAreaFormActionState } from "@/schema/area.schema";
+import { areaValidationSchema, TArea, TAreaDeleteActionState, TAreaFormActionState } from "@/schema/area.schema";
 import * as apiArea from "@/lib/area.api";
 import { getSession } from "@/lib/session";
+import { parseErrors } from "@/lib/utils";
 export const areaCreateEditAction = async (prevState: TAreaFormActionState, data: FormData) => {
 	const formData = Object.fromEntries(data);
 	const parsed = await areaValidationSchema.safeParseAsync(formData);
@@ -27,30 +28,25 @@ export const areaCreateEditAction = async (prevState: TAreaFormActionState, data
 			const isEditAction = typeof prevState.id !== "undefined";
 			if (isEditAction && prevState.id !== undefined) {
 				const result = await apiArea.update({ access: session.access, values: { id: prevState.id, data: { ...parsed.data } } });
-				if (result === "Unauthorized") {
-					prevState = {
-						...prevState,
-						type: "error",
-						errors: { root: "No está autorizado" },
-					};
-				} else {
-					prevState = {
+        if (result.type === 'success'){
+          prevState = {
 						...prevState,
 						type: "edited",
-						area: result,
+						area: result.data as TArea,
 						toast: { title: "Correcto", message: "Operación realizada correctamente", type: "success" },
 					};
-				}
-			} else {
-				const result = await apiArea.create({ access: session.access, data: { ...parsed.data } });
-				if (result === "Unauthorized") {
-					prevState = {
+        } else {
+          const responseError = result.data as Record<string, string | string[]>          
+          prevState = {
 						...prevState,
 						type: "error",
-						errors: { root: "No está autorizado" },
+						errors: parseErrors(responseError),
 					};
-				} else {
-					prevState = {
+        }
+			} else {
+				const result = await apiArea.create({ access: session.access, data: { ...parsed.data } });
+        if (result.type === 'success'){
+          prevState = {
 						...prevState,
 						type: "created",
 						fields: {
@@ -58,10 +54,17 @@ export const areaCreateEditAction = async (prevState: TAreaFormActionState, data
 							name: "",
 							total_area: "",
 						},
-						area: result,
+						area: result.data as TArea,
 						toast: { title: "Correcto", message: "Operación realizada correctamente", type: "success" },
 					};
-				}
+        }else {
+          const responseError = result.data as Record<string, string | string[]>
+          prevState = {
+						...prevState,
+						type: "error",
+						errors: parseErrors(responseError),
+					};
+        }
 			}
 		} else {
 			const formErrors = parsed.error.formErrors.fieldErrors;
@@ -88,7 +91,7 @@ export const areaDeleteAction = async (prevState: TAreaDeleteActionState, data: 
 	const session = await getSession();
 	if (session?.access) {
 		const result = await apiArea.destroy({access:session.access, id});
-    if(result){
+    if(result.type === "success"){
       prevState = {
         ...prevState,
         type:"deleted",

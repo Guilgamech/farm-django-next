@@ -30,9 +30,9 @@ import { SelectFilterComponent } from "@/components/shared/selectFilter/basic";
 import { useFormState } from "react-dom";
 
 const statusOptions = [
-  { id: 'semilleo', name: 'Semilleo' },
   { id: 'sembrado', name: 'Sembrado' },
-  { id: 'cocecha', name: 'Cocecha' }
+  { id: 'cosechado', name: 'Cosechado' },
+  { id: 'recogido', name: 'Recogido' }
 ]
 
 export const FormCultivoClient = ({
@@ -54,6 +54,7 @@ export const FormCultivoClient = ({
   const id = row?.id;
   const defaultRow = {
     code: row?.code ?? "",
+    name: row?.name ?? "",
     status: row?.status ?? "",
     type: typeof row?.type !== "undefined" ? String(row.type.id) : "",
     manager: typeof row?.manager !== "undefined" ? String(row.manager.trabajador_id) : "",

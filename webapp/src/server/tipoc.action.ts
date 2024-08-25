@@ -1,7 +1,8 @@
 "use server";
-import { tipocultivoValidationSchema, TTipoCultivoDeleteActionState, TTipoCultivoFormActionState } from "@/schema/tipoc.schema";
+import { tipocultivoValidationSchema, TTipoCultivo, TTipoCultivoDeleteActionState, TTipoCultivoFormActionState } from "@/schema/tipoc.schema";
 import * as apiTipoCultivo from "@/lib/tipoc.api";
 import { getSession } from "@/lib/session";
+import { parseErrors } from "@/lib/utils";
 export const tipocultivoCreateEditAction = async (prevState: TTipoCultivoFormActionState, data: FormData) => {
 	const formData = Object.fromEntries(data);
 	const parsed = await tipocultivoValidationSchema.safeParseAsync(formData);
@@ -25,39 +26,41 @@ export const tipocultivoCreateEditAction = async (prevState: TTipoCultivoFormAct
 			const isEditAction = typeof prevState.id !== "undefined";
 			if (isEditAction && prevState.id !== undefined) {
 				const result = await apiTipoCultivo.update({ access: session.access, values: { id: prevState.id, data: { ...parsed.data } } });
-				if (result === "Unauthorized") {
-					prevState = {
-						...prevState,
-						type: "error",
-						errors: { root: "No está autorizado" },
-					};
-				} else {
-					prevState = {
+        if (result.type === 'success'){
+          prevState = {
 						...prevState,
 						type: "edited",
-						tipocultivo: result,
+						tipocultivo: result.data as TTipoCultivo,
 						toast: { title: "Correcto", message: "Operación realizada correctamente", type: "success" },
 					};
-				}
-			} else {
-				const result = await apiTipoCultivo.create({ access: session.access, data: { ...parsed.data } });
-				if (result === "Unauthorized") {
-					prevState = {
+        } else {
+          const responseError = result.data as Record<string, string | string[]>          
+          prevState = {
 						...prevState,
 						type: "error",
-						errors: { root: "No está autorizado" },
+						errors: parseErrors(responseError),
 					};
-				} else {
-					prevState = {
+        }
+			} else {
+				const result = await apiTipoCultivo.create({ access: session.access, data: { ...parsed.data } });
+        if (result.type === 'success'){
+          prevState = {
 						...prevState,
 						type: "created",
 						fields: {
 							name: "",
 						},
-						tipocultivo: result,
+						tipocultivo: result.data as TTipoCultivo,
 						toast: { title: "Correcto", message: "Operación realizada correctamente", type: "success" },
 					};
-				}
+        }else {
+          const responseError = result.data as Record<string, string | string[]>
+          prevState = {
+						...prevState,
+						type: "error",
+						errors: parseErrors(responseError),
+					};
+        }
 			}
 		} else {
 			const formErrors = parsed.error.formErrors.fieldErrors;
@@ -82,7 +85,7 @@ export const tipocultivoDeleteAction = async (prevState: TTipoCultivoDeleteActio
 	const session = await getSession();
 	if (session?.access) {
 		const result = await apiTipoCultivo.destroy({access:session.access, id});
-    if(result){
+    if(result.type === "success"){
       prevState = {
         ...prevState,
         type:"deleted",

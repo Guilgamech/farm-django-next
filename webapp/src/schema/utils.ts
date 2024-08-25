@@ -1,9 +1,35 @@
 import { z } from "zod";
+
+
 export const toastFormSchema = z.object({
 	type: z.enum(["success", "error"]),
 	title: z.string(),
 	message: z.string(),
 });
+
+export const ciSchema = z
+  .string()
+  .refine((value) => /^[0-9]{1,11}$/.test(value), {
+    message: "El CI debe ser un número positivo y no más de 11 dígitos",
+  });
+
+export const ageSchema = z
+  .string()
+  .refine((value) => {
+    const num = parseInt(value, 10);
+    return num > 0 && num <= 100;
+  }, {
+    message: "La edad debe ser un número entero entre 1 y 100",
+  });
+
+export const passwordSchema = z
+  .string()
+  .min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
+  .regex(/[A-Z]/, { message: "La contraseña debe contener al menos una letra mayúscula" })
+  .regex(/[a-z]/, { message: "La contraseña debe contener al menos una letra minúscula" })
+  .regex(/[0-9]/, { message: "La contraseña debe contener al menos un número" })
+  .regex(/[@$!%*?&#]/, { message: "La contraseña debe contener al menos un carácter especial (@$!%*?&#)" });
+
 export type TToastForm = z.infer<typeof toastFormSchema>;
 export const codeString = z
 	.string()

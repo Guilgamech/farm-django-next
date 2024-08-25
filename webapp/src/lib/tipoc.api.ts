@@ -13,42 +13,34 @@ export const list = async ({access}:{access:string})=>{
   if(response.type === "success"){
     return response.data as TTipoCultivo[]
   }else{
-    return "Unauthorized"
+    return [] as TTipoCultivo[]
   }
 }
 
 export const create = async ({access, data}:{access:string, data:TTipoCultivoFields})=>{
-  let response = await apiFetch({
+  return await apiFetch({
     endpoint: "/tipo_cultivos/",
     access,
     method: "POST",
     data: {...data}
   })
-  if(response.type === "success"){
-    return response.data as TTipoCultivo
-  }else{
-    return "Unauthorized"
-  }
+
 }
 export const update = async ({access, values:{id, data}}:{access:string, values:{id:number, data:TTipoCultivoFields}})=>{
-  let response = await apiFetch({
+  return await apiFetch({
     endpoint: `/tipo_cultivos/${id}/`,
     access,
     method: "PUT",
     data: {...data}
   })
-  if(response.type === "success"){
-    return response.data as TTipoCultivo
-  }else{
-    return "Unauthorized"
-  }
+
 }
 
 export const destroy = async({access, id}:{access:string; id:number})=>{
-  let response = await apiFetch({
+  return await apiFetch({
     endpoint: `/tipo_cultivos/${id}/`,
     access,
     method: "DELETE"
   })
-  return response.type === "success"
+
 }

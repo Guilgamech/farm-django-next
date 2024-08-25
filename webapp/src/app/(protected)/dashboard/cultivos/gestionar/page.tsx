@@ -14,7 +14,7 @@ export default function Cultivos() {
         subtitle={<p className="text-sm md:text-md">Gestionar las Cultivos de la Empresa</p>}
         action={<FormModal
           trigger={<button className="btn-default font-bold">Crear Cultivo</button>}
-          heading={<span>Crear Cultivo Formulario</span>}>
+          heading={<span>Crear Cultivo </span>}>
           <CultivoForm />
         </FormModal>
         }

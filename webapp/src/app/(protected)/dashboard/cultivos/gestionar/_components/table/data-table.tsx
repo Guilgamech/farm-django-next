@@ -1,12 +1,17 @@
 "use client"
 import { useMemo } from "react";
 import { CaretSortIcon } from "@radix-ui/react-icons";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, Edit, EllipsisVertical, TreePine } from "lucide-react";
 import { ColumnDef, FilterFn, RowData } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/shared/data-table";
 import { TCultivoRead } from "@/schema/cultivo.schema"; // Asegúrate de tener el esquema correcto para Cultivo
 import { useCultivoStore } from "@/context/cultivo"; // Importa el contexto y el hook adecuadamente
+import { BasicMenu } from "@/components/shared/menu";
+import { FormModal } from "@/components/shared/modal";
+import { CultivoForm } from "../form/create";
+import { DeleteCultivoForm } from "../form/delete";
+import Link from "next/link";
 
 const columns: ColumnDef<TCultivoRead>[] = [
   {
@@ -124,6 +129,36 @@ const columns: ColumnDef<TCultivoRead>[] = [
     },
     cell: ({ row }) => <div>{row.original.manager.name}</div>,
   },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      return (
+        <div className="flex justify-end">
+          <BasicMenu className="bg-white border-primary w-fit p-0"
+            menu={<div className="flex flex-col gap-2 p-1">
+              <Link href={`/dashboard/cultivos/${row.original.id}`} className="link-menu">
+                <TreePine className="w-6 h-6" />
+                Detalles
+              </Link>
+              <FormModal
+                trigger={<Button className="link-menu">
+                  <Edit className="w-6 h-6" />
+                  Edit
+                </Button>}
+                heading={<span>Editar Cultivo </span>}>
+                <CultivoForm row={row.original} />
+              </FormModal>
+              <DeleteCultivoForm row={row.original} />
+            </div>}>
+            <Button variant="option" size="icon">
+              <EllipsisVertical className="w-6 h-6" />
+            </Button>
+          </BasicMenu>
+        </div>
+      )
+    },
+  },
 ];
 
 const globalFilterFn: FilterFn<TCultivoRead> = (row, columnId, filterValue, addMeta) => {
@@ -151,7 +186,7 @@ export function DataTableCultivo() {
         headerCell: "h-[58px]",
       }}
       showHeader
-      placeHolderSearch="Filtrar por código, estado, tipo, manager, área ..."
+      placeHolderSearch="Filtrar por código, estado, tipo, encargado, área ..."
       isLoading={fetchingCultivos}
       data={data}
       columns={columns as ColumnDef<RowData>[]}

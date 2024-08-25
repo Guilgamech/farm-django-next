@@ -13,13 +13,13 @@ export const list = async ({ access }: { access: string }) => {
   if (response.type === "success") {
     return response.data as TCultivoRead[];
   } else {
-    return "Unauthorized";
+    return [] as TCultivoRead[];
   }
 };
 
 // Create Cultivo
 export const create = async ({ access, data }: { access: string; data: TCultivoFields }) => {
-  let response = await apiFetch({
+  return await apiFetch({
     endpoint: "/cultivos/",
     access,
     method: "POST",
@@ -29,16 +29,11 @@ export const create = async ({ access, data }: { access: string; data: TCultivoF
       manager: Number(data.manager),
     }
   });
-  if (response.type === "success") {
-    return response.data as TCultivo;
-  } else {
-    return "Unauthorized";
-  }
 };
 
 // Update Cultivo
 export const update = async ({ access, values: { id, data } }: { access: string; values: { id: number; data: TCultivoFields } }) => {
-  let response = await apiFetch({
+    return await apiFetch({
     endpoint: `/cultivos/${id}/`,
     access,
     method: "PUT",
@@ -48,19 +43,15 @@ export const update = async ({ access, values: { id, data } }: { access: string;
       manager: Number(data.manager),
     }
   });
-  if (response.type === "success") {
-    return response.data as TCultivo;
-  } else {
-    return "Unauthorized";
-  }
+
 };
 
 // Delete Cultivo
 export const destroy = async ({ access, id }: { access: string; id: number }) => {
-  let response = await apiFetch({
+  return await apiFetch({
     endpoint: `/cultivos/${id}/`,
     access,
     method: "DELETE"
   });
-  return response.type === "success";
+
 };
