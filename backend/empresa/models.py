@@ -134,7 +134,7 @@ class Flota(Base):
     def __str__(self):
         return self.code
 
-class CultivoEnfermedad(Base):
+class CultivoEnfermedad(models.Model):
     STATUS_CHOICES = (
         ('leve', 'Leve'),
         ('medio', 'Medio'),
@@ -152,7 +152,7 @@ class CultivoEnfermedad(Base):
         unique_together = ('disease', 'crop', 'treatment', 'start')
 
 
-class AreaCultivo(Base):
+class AreaCultivo(models.Model):
     area = models.ForeignKey(to=Area, on_delete=models.CASCADE, related_name="area_cultivos")
     crop = models.ForeignKey(to=Cultivo, on_delete=models.CASCADE, related_name="area_cultivos")
     date_planted = models.DateTimeField(null=True, default=None)
@@ -167,7 +167,7 @@ class AreaCultivo(Base):
         return f"{init} area:{str(self.area)}, crop:{str(self.crop)}{end}"    
     
     
-class AgricolaCultivo(Base):
+class AgricolaCultivo(models.Model):
     crop = models.ForeignKey(Cultivo, on_delete=models.CASCADE, related_name="agricola_cultivos")
     worker = models.ForeignKey(Agricola, on_delete=models.CASCADE, related_name="agricola_cultivos")
     class Meta:
