@@ -1,8 +1,6 @@
 from usuario.serializers import RoleSerializer
 from rest_framework import serializers
 from .models import *
-from django.utils import timezone
-import datetime
 
 
 class AreaSerializer(serializers.ModelSerializer):
@@ -33,39 +31,7 @@ class AgricolaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Agricola
         fields = '__all__'
-    
-    
-    def validate(self, data):
-        ci = data.get('ci')
-        age = data.get('age')
-
-        if ci and age is not None:
-            # Extrae los dos primeros dígitos del carnet
-            year_from_ci = int(ci[:2])
-
-            # Obtén el año actual
-            current_year = datetime.datetime.now().year
-
-            # Determina el año de nacimiento
-            if year_from_ci >= 0 and year_from_ci <= 99:
-                year_of_birth = 2000 + year_from_ci if (2000 + year_from_ci) <= current_year else 1900 + year_from_ci
-            else:
-                raise serializers.ValidationError("El año de nacimiento en el carnet de identidad es inválido.")
-
-            # Calcula la edad esperada
-            expected_age = current_year - year_of_birth
-
-            # Verifica que la edad calculada esté en el rango permitido
-            if expected_age < 18 or expected_age > 70:
-                raise serializers.ValidationError("La edad calculada a partir del carnet de identidad no está en el rango permitido (18-70 años).")
-
-            # Verifica que la edad proporcionada coincida con la edad calculada
-            if age != expected_age:
-                raise serializers.ValidationError(
-                     {"age": [f"La edad proporcionada ({age}) no coincide con la edad calculada a partir del carnet de identidad ({expected_age})."]}
-                )
-
-        return data
+        
 class AgricolaReadSerializer(serializers.ModelSerializer):
     area = AreaSerializer()
     
@@ -123,38 +89,6 @@ class OficinaSerializer(serializers.ModelSerializer):
             instance.area = validated_data['area']
         instance.save()
         return instance
-    
-    def validate(self, data):
-        ci = data.get('ci')
-        age = data.get('age')
-
-        if ci and age is not None:
-            # Extrae los dos primeros dígitos del carnet
-            year_from_ci = int(ci[:2])
-
-            # Obtén el año actual
-            current_year = datetime.datetime.now().year
-
-            # Determina el año de nacimiento
-            if year_from_ci >= 0 and year_from_ci <= 99:
-                year_of_birth = 2000 + year_from_ci if (2000 + year_from_ci) <= current_year else 1900 + year_from_ci
-            else:
-                raise serializers.ValidationError("El año de nacimiento en el carnet de identidad es inválido.")
-
-            # Calcula la edad esperada
-            expected_age = current_year - year_of_birth
-
-            # Verifica que la edad calculada esté en el rango permitido
-            if expected_age < 18 or expected_age > 70:
-                raise serializers.ValidationError("La edad calculada a partir del carnet de identidad no está en el rango permitido (18-70 años).")
-
-            # Verifica que la edad proporcionada coincida con la edad calculada
-            if age != expected_age:
-                raise serializers.ValidationError(
-                     {"age": [f"La edad proporcionada ({age}) no coincide con la edad calculada a partir del carnet de identidad ({expected_age})."]}
-                )
-
-        return data
         
 class OficinaReadSerializer(serializers.ModelSerializer):
     area = AreaSerializer()
@@ -179,9 +113,6 @@ class TrabajadorSerializer(serializers.ModelSerializer):
             return "Agricola"
         else:
             return "Oficina"
-        
-        
-        
 
 class TrabajadorReadSerializer(serializers.ModelSerializer):
     area = AreaSerializer()
@@ -202,11 +133,6 @@ class TrabajadorReadSerializer(serializers.ModelSerializer):
 class IncidenciasSerializer(serializers.ModelSerializer):
     area = serializers.PrimaryKeyRelatedField(queryset=Area.objects.all())
 
-    
-    def validate_date(self, value):
-        if value and value > timezone.now():
-            raise serializers.ValidationError("La fecha no puede ser mayor que la fecha actual.")
-        return value
     class Meta:
         model = Incidencias
         fields = '__all__'
@@ -288,11 +214,6 @@ class CultivoEnfermedadSerializer(serializers.ModelSerializer):
     treatment = serializers.PrimaryKeyRelatedField(queryset=Tratamientos.objects.all())
     disease = serializers.PrimaryKeyRelatedField(queryset=Enfermedades.objects.all())
     crop = serializers.PrimaryKeyRelatedField(queryset=Cultivo.objects.all())
-    
-    def validate_start(self, value):
-        if value and value > timezone.now():
-            raise serializers.ValidationError("La fecha no puede ser mayor que la fecha actual.")
-        return value
 
     def validate(self, data):
         # Obtenemos la instancia actual si estamos en una actualización
@@ -329,11 +250,6 @@ class CultivoEnfermedadReadSerializer(serializers.ModelSerializer):
 class AreaCultivoSerializer(serializers.ModelSerializer):
     area = serializers.PrimaryKeyRelatedField(queryset=Area.objects.all())
     crop = serializers.PrimaryKeyRelatedField(queryset=Cultivo.objects.all())
-    
-    def validate_date_planted(self, value):
-        if value and value > timezone.now():
-            raise serializers.ValidationError("La fecha no puede ser mayor que la fecha actual.")
-        return value
     
     def validate(self, data):
         # Obtenemos la instancia actual si estamos en una actualización
