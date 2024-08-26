@@ -1,6 +1,9 @@
 from django.db import models
 from usuario.models import Role, User, UserManager
 
+from django.core.exceptions import ValidationError
+from datetime import date
+
 class ActivosManager(models.Manager):
   def get_queryset(self):
     return super().get_queryset().filter(is_deleted=False)
@@ -59,10 +62,12 @@ class TipoFlota(Base):
 class Trabajador(Base):
     trabajador_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    ci = models.CharField(max_length=255)
+    ci = models.CharField(max_length=255, unique=True)
     age = models.IntegerField()
     direction = models.CharField(max_length=255)
     area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name='trabajadores')
+    
+
     
     def __str__(self):
         return self.name
