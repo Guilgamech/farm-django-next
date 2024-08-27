@@ -23,7 +23,7 @@ class Base(models.Model):
     class Meta:
         abstract = True
 
-class Area(Base):
+class Area(models.Model):
     code = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     total_area = models.FloatField()
@@ -31,7 +31,7 @@ class Area(Base):
     def __str__(self):
         return self.name
     
-class Incidencias(Base):
+class Incidencias(models.Model):
     type = models.CharField(max_length=255)
     date = models.DateTimeField(null=True, default=None)
     status = models.CharField(max_length=255)
@@ -43,26 +43,26 @@ class Incidencias(Base):
         return self.type
 
     
-class TipoCultivo(Base):
+class TipoCultivo(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
 
 
-class TipoFlota(Base):
+class TipoFlota(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
     
-class Trabajador(Base):
+class Trabajador(models.Model):
     trabajador_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     ci = models.CharField(max_length=255)
     age = models.IntegerField()
     direction = models.CharField(max_length=255)
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name='trabajadores')
+    area = models.ForeignKey(Area, on_delete=models.SET_NULL, related_name='trabajadores', null=True, blank=True)
     
     def __str__(self):
         return self.name
@@ -82,25 +82,25 @@ class Oficina(Trabajador, User):
         return self.username
 
 
-class Enfermedades(Base):
+class Enfermedades(models.Model):
     name = models.CharField(max_length=255)
     category = models.CharField(max_length=255)
-    type_crops = models.ForeignKey(TipoCultivo, on_delete=models.CASCADE, related_name='enfermedades')
+    type_crops = models.ForeignKey(TipoCultivo, on_delete=models.SET_NULL, related_name='enfermedades', null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
-class Tratamientos(Base):
+class Tratamientos(models.Model):
     name = models.CharField(max_length=255)
     treatment = models.TextField()
-    disease = models.ForeignKey(Enfermedades, on_delete=models.CASCADE, related_name='tratamientos')
+    disease = models.ForeignKey(Enfermedades, on_delete=models.SET_NULL, related_name='tratamientos', null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
-class Cultivo(Base):
+class Cultivo(models.Model):
     STATUS_CHOICES = (
         ('sembrado', 'Sembrado'),
         ('cosechado', 'Cosechado'),
@@ -110,8 +110,8 @@ class Cultivo(Base):
     name = models.CharField(max_length=255)
 
     status = models.CharField(max_length=12, choices=STATUS_CHOICES)
-    type = models.ForeignKey(TipoCultivo, on_delete=models.CASCADE, related_name='cultivos')
-    manager = models.ForeignKey(Trabajador, on_delete=models.CASCADE, related_name='manager_cultivo')
+    type = models.ForeignKey(TipoCultivo, on_delete=models.SET_NULL, related_name='cultivos', null=True, blank=True)
+    manager = models.ForeignKey(Trabajador, on_delete=models.SET_NULL, related_name='manager_cultivo', null=True, blank=True)
     areas = models.ManyToManyField(Area, through='AreaCultivo', related_name='areas_cultivo')
     workers = models.ManyToManyField(Agricola, through='AgricolaCultivo', related_name='agricolas_cultivo')
     disease = models.ManyToManyField(Enfermedades, through="CultivoEnfermedad", related_name='enfermedades_cultivo')
@@ -120,16 +120,16 @@ class Cultivo(Base):
         return self.name
 
 
-class Flota(Base):
+class Flota(models.Model):
     STATUS_CHOICES = (
         ('deteriorado', 'Deteriorado'),
         ('optimo', 'Optimo'),
     )
     code = models.CharField(max_length=255, unique=True)
     status = models.CharField(max_length=12, choices=STATUS_CHOICES)
-    type = models.ForeignKey(TipoFlota, on_delete=models.CASCADE, related_name='flotas')
-    manager = models.ForeignKey(Trabajador, on_delete=models.CASCADE, related_name='flotas')
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name='flotas')
+    type = models.ForeignKey(TipoFlota, on_delete=models.SET_NULL, related_name='flotas', null=True, blank=True)    
+    manager = models.ForeignKey(Trabajador, on_delete=models.SET_NULL, related_name='flotas', null=True, blank=True)
+    area = models.ForeignKey(Area, on_delete=models.SET_NULL, related_name='flotas', null=True, blank=True)
 
     def __str__(self):
         return self.code
