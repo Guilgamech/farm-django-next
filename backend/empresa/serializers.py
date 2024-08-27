@@ -42,6 +42,15 @@ class AgricolaSerializer(serializers.ModelSerializer):
         if ci and age is not None:
             # Extrae los dos primeros dígitos del carnet
             year_from_ci = int(ci[:2])
+            month_from_ci = int(ci[2:4])
+            day_from_ci = int(ci[4:6])
+
+            if not (1 <= month_from_ci <= 12):
+                raise serializers.ValidationError({"ci": "Los dígitos 3 y 4 del CI deben representar un mes válido (1-12)."})
+
+            if not (1 <= day_from_ci <= 31):
+                raise serializers.ValidationError({"ci": "Los dígitos 5 y 6 del CI deben representar un día válido (1-31)."})
+
 
             # Obtén el año actual
             current_year = datetime.datetime.now().year
@@ -131,6 +140,15 @@ class OficinaSerializer(serializers.ModelSerializer):
         if ci and age is not None:
             # Extrae los dos primeros dígitos del carnet
             year_from_ci = int(ci[:2])
+            month_from_ci = int(ci[2:4])
+            day_from_ci = int(ci[4:6])
+
+            if not (1 <= month_from_ci <= 12):
+                raise serializers.ValidationError({"ci": "Los dígitos 3 y 4 del CI deben representar un mes válido (1-12)."})
+
+            if not (1 <= day_from_ci <= 31):
+                raise serializers.ValidationError({"ci": "Los dígitos 5 y 6 del CI deben representar un día válido (1-31)."})
+
 
             # Obtén el año actual
             current_year = datetime.datetime.now().year
