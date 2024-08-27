@@ -38,7 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
             'id': {'read_only': True},
             'password': {'write_only': True}
         }
-
+    
     def create(self, validated_data):
         user = User.objects.create(
             email=validated_data["email"],
@@ -50,7 +50,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         if validated_data.get('email'):
-            instance.username = validated_data['email']
+            instance.email = validated_data['email']
         if validated_data.get('password'):
             instance.set_password(validated_data['password'])
         if validated_data.get('rol'):  # Agrega este bloque

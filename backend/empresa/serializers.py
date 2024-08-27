@@ -87,7 +87,7 @@ class AgricolaReadSerializer(serializers.ModelSerializer):
 class OficinaSerializer(serializers.ModelSerializer):
     area = serializers.PrimaryKeyRelatedField(queryset=Area.objects.all())
     rol = serializers.PrimaryKeyRelatedField(queryset=Role.objects.all(), allow_null=True)
-    
+    email = serializers.EmailField(required=False) 
     class Meta:
         model = Oficina
         fields = ('id', 'name', 'ci', 'age', 'direction',  'username', 'password', 'email', 'rol', 'area')  # Agrega 'rol' aquí
@@ -97,6 +97,8 @@ class OficinaSerializer(serializers.ModelSerializer):
         }
         
     def create(self, validated_data):
+        if 'email' not in validated_data:
+            raise serializers.ValidationError({'email': 'Este campo es obligatorio al crear un nuevo usuario.'})
         user = Oficina.objects.create(
             email=validated_data["email"],
             name=validated_data["name"],
@@ -112,26 +114,21 @@ class OficinaSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        if validated_data.get('email'):
-            instance.username = validated_data['email']
-        if validated_data.get('name'):
-            instance.username = validated_data['name']
-        if validated_data.get('ci'):
-            instance.username = validated_data['ci']
-        if validated_data.get('age'):
-            instance.username = validated_data['age']
-        if validated_data.get('direction'):
-            instance.username = validated_data['direction']
-        if validated_data.get('username'):
-            instance.username = validated_data['username']
-        if validated_data.get('password'):
+        new_email = validated_data.get('email', None)
+        if new_email is not None and new_email != instance.email:
+            if User.objects.filter(email=new_email).exclude(pk=instance.pk).exists():
+                raise serializers.ValidationError({"email": "Este correo electrónico ya está en uso."})
+            instance.email = new_email
+
+        for attr, value in validated_data.items():
+            if attr not in ['password', 'email']:  # Excluye 'password' y 'email'
+                setattr(instance, attr, value)
+    
+    # Actualizar el password solo si se proporciona un nuevo valor
+        if 'password' in validated_data:
             instance.set_password(validated_data['password'])
-        if validated_data.get('rol'):  # Agrega este bloque
-            instance.rol = validated_data['rol']
-        if validated_data.get('area'):  # Agrega este bloque
-            instance.area = validated_data['area']
-        instance.save()
-        return instance
+            instance.save()
+            return instance
     
     def validate(self, data):
         ci = data.get('ci')
